@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7f3ec">
+<title>ひらがな · Ficha de práctica</title>
+<style>
+:root{--ink:#292725;--muted:#77716b;--paper:#fffdf9;--line:#d9d1c7;--accent:#7867a8;--accent-soft:#eee9f7;--bg:#f7f3ec;--given:#f1eee8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{padding:22px 18px 16px;max-width:1100px;margin:auto}
+h1{font-size:clamp(1.45rem,4vw,2.1rem);margin:0 0 6px;font-weight:750;letter-spacing:.01em}
+.sub{margin:0;color:var(--muted);font-size:.96rem}
+.controls{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-top:18px}
+button,select{font:inherit;border:1px solid var(--line);border-radius:12px;background:var(--paper);padding:10px 13px;color:var(--ink);min-height:42px}
+button{cursor:pointer;touch-action:manipulation}
+button.primary{background:var(--accent);color:white;border-color:var(--accent)}
+button:active{transform:translateY(1px)}
+select{max-width:100%}
+.note{font-size:.85rem;color:var(--muted);margin-top:12px;line-height:1.45}
+main{max-width:1100px;margin:0 auto;padding:0 14px 40px}
+.section-title{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:22px 2px 10px}
+.section-title h2{font-size:1.05rem;margin:0}
+.section-title span{font-size:.82rem;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pair{background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:7px;min-width:0;box-shadow:0 1px 1px #00000006}
+.pair-label{font-size:.7rem;color:var(--muted);text-align:center;margin:0 0 5px}
+.halves{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.cell{position:relative;min-width:0;aspect-ratio:1.08 / 1;border:1px solid #d8d0c5;border-radius:8px;overflow:hidden;background:#fff}
+.cell.given{background:var(--given);display:flex;align-items:center;justify-content:center}
+.prompt{font-size:clamp(1rem,3.2vw,1.6rem);font-weight:600;text-align:center;line-height:1.1;overflow-wrap:anywhere;padding:2px}
+.prompt.kana{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;font-size:clamp(1.35rem,4.3vw,2.15rem)}
+.cell canvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair}
+.cell.blank::after{content:"";position:absolute;left:12%;right:12%;bottom:18%;border-bottom:1px dashed #e7e0d7;pointer-events:none}
+.cell-tools{display:flex;justify-content:flex-end;gap:5px;margin-top:5px}
+.mini{font-size:.75rem;padding:5px 8px;min-height:30px;border-radius:8px}
+.revealed{background:var(--accent-soft)!important}
+footer{max-width:1100px;margin:auto;padding:0 18px 30px;color:var(--muted);font-size:.82rem;line-height:1.5}
+@media(min-width:650px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.pair{padding:9px}.cell{aspect-ratio:1.12 / 1}}
+@media(min-width:950px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media print{body{background:white}.controls,.note,.cell-tools,footer{display:none!important}header{padding:8px 0}main{padding:0}.grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.pair{break-inside:avoid;box-shadow:none;padding:4px}.cell{aspect-ratio:1.2/1}.pair-label{margin-bottom:2px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>ひらがな · Ficha de práctica</h1>
+  <p class="sub">Mira una pista y completa la otra mitad con tu Apple Pencil.</p>
+  <div class="controls">
+    <label for="scope">Contenido:</label>
+    <select id="scope">
+      <option value="all">Todo el hiragana</option>
+      <option value="basic">Hiragana básico</option>
+      <option value="dakuten">Dakuten y handakuten</option>
+      <option value="combo">Combinaciones pequeñas ゃ・ゅ・ょ</option>
+    </select>
+    <button class="primary" id="newSheet">Nueva ficha aleatoria</button>
+    <button id="clearAll">Borrar todo lo escrito</button>
+    <button id="revealAll">Mostrar respuestas</button>
+    <button id="print">Imprimir / guardar PDF</button>
+  </div>
+  <p class="note">Escribe directamente dentro de las casillas vacías con el lápiz. Como la escritura es a mano, la página no puede corregirla automáticamente; puedes revelar las respuestas para comparar. Cada ficha oculta al azar el hiragana o el romaji de cada sílaba.</p>
+</header>
+<main id="sheet"></main>
+<footer>
+  Hecho para practicar, no hace falta iniciar sesión. Los trazos se mantienen en esta página mientras no la recargues; si quieres conservar una ficha, usa «Imprimir / guardar PDF» o haz una captura.
+</footer>
+<script>
+const basic = [
+["あ","a"],["い","i"],["う","u"],["え","e"],["お","o"],
+["か","ka"],["き","ki"],["く","ku"],["け","ke"],["こ","ko"],
+["さ","sa"],["し","shi"],["す","su"],["せ","se"],["そ","so"],
+["た","ta"],["ち","chi"],["つ","tsu"],["て","te"],["と","to"],
+["な","na"],["に","ni"],["ぬ","nu"],["ね","ne"],["の","no"],
+["は","ha"],["ひ","hi"],["ふ","fu"],["へ","he"],["ほ","ho"],
+["ま","ma"],["み","mi"],["む","mu"],["め","me"],["も","mo"],
+["や","ya"],["ゆ","yu"],["よ","yo"],
+["ら","ra"],["り","ri"],["る","ru"],["れ","re"],["ろ","ro"],
+["わ","wa"],["を","wo"],["ん","n"]
+];
+const dakuten = [
+["が","ga"],["ぎ","gi"],["ぐ","gu"],["げ","ge"],["ご","go"],
+["ざ","za"],["じ","ji"],["ず","zu"],["ぜ","ze"],["ぞ","zo"],
+["だ","da"],["ぢ","ji"],["づ","zu"],["で","de"],["ど","do"],
+["ば","ba"],["び","bi"],["ぶ","bu"],["べ","be"],["ぼ","bo"],
+["ぱ","pa"],["ぴ","pi"],["ぷ","pu"],["ぺ","pe"],["ぽ","po"]
+];
+const combos = [
+["きゃ","kya"],["きゅ","kyu"],["きょ","kyo"],
+["しゃ","sha"],["しゅ","shu"],["しょ","sho"],
+["ちゃ","cha"],["ちゅ","chu"],["ちょ","cho"],
+["にゃ","nya"],["にゅ","nyu"],["にょ","nyo"],
+["ひゃ","hya"],["ひゅ","hyu"],["ひょ","hyo"],
+["みゃ","mya"],["みゅ","myu"],["みょ","myo"],
+["りゃ","rya"],["りゅ","ryu"],["りょ","ryo"],
+["ぎゃ","gya"],["ぎゅ","gyu"],["ぎょ","gyo"],
+["じゃ","ja"],["じゅ","ju"],["じょ","jo"],
+["ぢゃ","dya"],["ぢゅ","dyu"],["ぢょ","dyo"],
+["びゃ","bya"],["びゅ","byu"],["びょ","byo"],
+["ぴゃ","pya"],["ぴゅ","pyu"],["ぴょ","pyo"]
+];
+const sections = [
+  {title:"Hiragana básico", key:"basic", data:basic},
+  {title:"Dakuten ゛ y handakuten ゜", key:"dakuten", data:dakuten},
+  {title:"Combinaciones con ゃ・ゅ・ょ", key:"combo", data:combos}
+];
+const sheet = document.getElementById("sheet");
+let allCanvases = [];
+let allRevealed = false;
+
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function makeCell(value, type, isGiven, pairId){
+  const cell=document.createElement("div");
+  cell.className="cell "+(isGiven?"given":"blank");
+  if(isGiven){
+    const p=document.createElement("div");
+    p.className="prompt "+(type==="kana"?"kana":"");
+    p.textContent=value;
+    cell.appendChild(p);
+  }else{
+    const canvas=document.createElement("canvas");
+    canvas.setAttribute("aria-label", type==="kana"?"Escribe el hiragana aquí":"Escribe el romaji aquí");
+    cell.appendChild(canvas);
+    allCanvases.push({canvas, pairId});
+    setupCanvas(canvas);
+  }
+  return cell;
+}
+function setupCanvas(canvas){
+  const ctx=canvas.getContext("2d");
+  let drawing=false, last=null;
+  function resize(){
+    const rect=canvas.getBoundingClientRect();
+    const dpr=Math.max(1,window.devicePixelRatio||1);
+    const old=document.createElement("canvas");
+    old.width=canvas.width;old.height=canvas.height;
+    if(old.width&&old.height)old.getContext("2d").drawImage(canvas,0,0);
+    canvas.width=Math.round(rect.width*dpr);
+    canvas.height=Math.round(rect.height*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.lineWidth=2.4;ctx.lineCap="round";ctx.lineJoin="round";ctx.strokeStyle="#292725";
+    if(old.width&&old.height)ctx.drawImage(old,0,0,old.width,old.height,0,0,rect.width,rect.height);
+  }
+  requestAnimationFrame(resize);
+  function point(e){const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+  canvas.addEventListener("pointerdown",e=>{e.preventDefault();canvas.setPointerCapture(e.pointerId);drawing=true;last=point(e);ctx.beginPath();ctx.arc(last.x,last.y,.7,0,Math.PI*2);ctx.fillStyle="#292725";ctx.fill()});
+  canvas.addEventListener("pointermove",e=>{if(!drawing)return;e.preventDefault();const p=point(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p});
+  const stop=()=>{drawing=false;last=null};
+  canvas.addEventListener("pointerup",stop);canvas.addEventListener("pointercancel",stop);canvas.addEventListener("lostpointercapture",stop);
+  canvas._clear=()=>ctx.clearRect(0,0,canvas.width,canvas.height);
+}
+function render(){
+  sheet.innerHTML="";allCanvases=[];allRevealed=false;
+  const mode=document.getElementById("scope").value;
+  const chosen=mode==="all"?sections:sections.filter(s=>s.key===mode);
+  chosen.forEach(section=>{
+    const block=document.createElement("section");
+    const heading=document.createElement("div");heading.className="section-title";
+    const h=document.createElement("h2");h.textContent=section.title;
+    const count=document.createElement("span");count.textContent=section.data.length+" sílabas";
+    heading.append(h,count);block.appendChild(heading);
+    const grid=document.createElement("div");grid.className="grid";
+    shuffle(section.data).forEach((item,index)=>{
+      const [kana,romaji]=item;
+      const hideKana=Math.random()<.5;
+      const pair=document.createElement("article");pair.className="pair";
+      const label=document.createElement("p");label.className="pair-label";label.textContent="Una pista · una respuesta";pair.appendChild(label);
+      const halves=document.createElement("div");halves.className="halves";
+      const id=section.key+"-"+kana;
+      halves.appendChild(makeCell(kana,"kana",!hideKana,id));
+      halves.appendChild(makeCell(romaji,"romaji",hideKana,id));
+      pair.appendChild(halves);
+      const tools=document.createElement("div");tools.className="cell-tools";
+      const clear=document.createElement("button");clear.className="mini";clear.textContent="Borrar";clear.onclick=()=>{pair.querySelectorAll("canvas").forEach(c=>c._clear&&c._clear())};
+      const reveal=document.createElement("button");reveal.className="mini";reveal.textContent="Ver respuesta";reveal.onclick=()=>{
+        if(pair.querySelector(".answer")){pair.querySelector(".answer").remove();return}
+        const answer=document.createElement("div");answer.className="answer revealed";answer.style.cssText="margin-top:5px;padding:6px;border-radius:7px;text-align:center;font-size:.85rem";
+        answer.textContent=kana+" = "+romaji;pair.appendChild(answer);
+      };
+      tools.append(clear,reveal);pair.appendChild(tools);grid.appendChild(pair);
+    });
+    block.appendChild(grid);sheet.appendChild(block);
+  });
+}
+document.getElementById("newSheet").addEventListener("click",render);
+document.getElementById("scope").addEventListener("change",render);
+document.getElementById("clearAll").addEventListener("click",()=>{allCanvases.forEach(x=>x.canvas._clear&&x.canvas._clear());document.querySelectorAll(".answer").forEach(x=>x.remove())});
+document.getElementById("revealAll").addEventListener("click",()=>{
+  document.querySelectorAll(".pair").forEach(pair=>{
+    const btn=[...pair.querySelectorAll("button")].find(b=>b.textContent==="Ver respuesta");
+    if(btn)btn.click();
+  });
+});
+document.getElementById("print").addEventListener("click",()=>window.print());
+window.addEventListener("resize",()=>{ /* canvas remains usable; no forced rerender to preserve writing */ });
+render();
+</script>
+</body>
+</html>
