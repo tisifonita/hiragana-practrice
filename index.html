@@ -53,6 +53,15 @@ footer{max-width:1100px;margin:auto;padding:0 18px 30px;color:var(--muted);font-
 @media(min-width:650px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.pair{padding:9px}.cell{aspect-ratio:1.12 / 1}}
 @media(min-width:950px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media print{body{background:white}.controls,.note,.cell-tools,footer{display:none!important}header{padding:8px 0}main{padding:0}.grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.pair{break-inside:avoid;box-shadow:none;padding:4px}.cell{aspect-ratio:1.2/1}.pair-label{margin-bottom:2px}}
+
+/* Evitar selecciones accidentales en el iPad */
+html, body, .card, .cell, .cell * {
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
 </style>
 </head>
 <body>
@@ -140,6 +149,11 @@ function makeCell(value, type, isGiven, pairId){
   return cell;
 }
 function setupCanvas(canvas){
+  
+  canvas.style.webkitUserSelect = "none";
+  canvas.style.userSelect = "none";
+  canvas.style.webkitTouchCallout = "none";
+
   const ctx=canvas.getContext("2d");
   canvas.addEventListener("contextmenu", e => e.preventDefault());
   canvas.addEventListener("selectstart", e => e.preventDefault());
