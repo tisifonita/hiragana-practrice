@@ -31,7 +31,20 @@ main{max-width:1100px;margin:0 auto;padding:0 14px 40px}
 .cell.given{background:var(--given);display:flex;align-items:center;justify-content:center}
 .prompt{font-size:clamp(1rem,3.2vw,1.6rem);font-weight:600;text-align:center;line-height:1.1;overflow-wrap:anywhere;padding:2px}
 .prompt.kana{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;font-size:clamp(1.35rem,4.3vw,2.15rem)}
-.cell canvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair}
+.cell, .cell canvas {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cell canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: crosshair;
+}
 .cell.blank::after{content:"";position:absolute;left:12%;right:12%;bottom:18%;border-bottom:1px dashed #e7e0d7;pointer-events:none}
 .cell-tools{display:flex;justify-content:flex-end;gap:5px;margin-top:5px}
 .mini{font-size:.75rem;padding:5px 8px;min-height:30px;border-radius:8px}
@@ -128,6 +141,9 @@ function makeCell(value, type, isGiven, pairId){
 }
 function setupCanvas(canvas){
   const ctx=canvas.getContext("2d");
+  canvas.addEventListener("contextmenu", e => e.preventDefault());
+  canvas.addEventListener("selectstart", e => e.preventDefault());
+  canvas.addEventListener("dragstart", e => e.preventDefault());
   let drawing=false, last=null;
   function resize(){
     const rect=canvas.getBoundingClientRect();
