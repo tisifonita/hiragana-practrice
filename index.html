@@ -25,6 +25,33 @@ main{max-width:1100px;margin:0 auto;padding:0 14px 40px}
 .section-title span{font-size:.82rem;color:var(--muted)}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .pair{background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:7px;min-width:0;box-shadow:0 1px 1px #00000006}
+  
+/* Fichas de palabras y expresiones */
+.pair.word-pair .halves {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.pair.word-pair .cell {
+  aspect-ratio: auto;
+  min-height: 100px;
+}
+
+.pair.word-pair .cell.given {
+  padding: 14px 8px;
+}
+
+.pair.word-pair .prompt {
+  overflow-wrap: anywhere;
+}
+
+.pair.word-pair .prompt.kana {
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+}
+
+.pair.word-pair .cell.blank {
+  min-height: 150px;
+}
+
 .pair-label{font-size:.7rem;color:var(--muted);text-align:center;margin:0 0 5px}
 .halves{display:grid;grid-template-columns:1fr 1fr;gap:5px}
 .cell{position:relative;min-width:0;aspect-ratio:1.08 / 1;border:1px solid #d8d0c5;border-radius:8px;overflow:hidden;background:#fff}
@@ -291,7 +318,7 @@ function render(){
         const question=askKana?entry.kana:entry.romaji;
 
         const pair=document.createElement("article");
-        pair.className="pair";
+        pair.className="pair word-pair";
 
         const label=document.createElement("p");
         label.className="pair-label";
