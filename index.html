@@ -75,6 +75,7 @@ html, body, .card, .cell, .cell * {
       <option value="basic">Hiragana básico</option>
       <option value="dakuten">Dakuten y handakuten</option>
       <option value="combo">Combinaciones pequeñas ゃ・ゅ・ょ</option>
+      <option value="words">Palabras y expresiones</option>
     </select>
     <button class="primary" id="newSheet">Nueva ficha aleatoria</button>
     <button id="clearAll">Borrar todo lo escrito</button>
@@ -121,10 +122,98 @@ const combos = [
 ["びゃ","bya"],["びゅ","byu"],["びょ","byo"],
 ["ぴゃ","pya"],["ぴゅ","pyu"],["ぴょ","pyo"]
 ];
+
+const vocabulary = [
+  // Animales
+  {kana:"ねこ",romaji:"neko",es:"gato",cat:"Animales"},
+  {kana:"いぬ",romaji:"inu",es:"perro",cat:"Animales"},
+  {kana:"とり",romaji:"tori",es:"pájaro",cat:"Animales"},
+  {kana:"さかな",romaji:"sakana",es:"pez",cat:"Animales"},
+  {kana:"うさぎ",romaji:"usagi",es:"conejo",cat:"Animales"},
+  {kana:"うま",romaji:"uma",es:"caballo",cat:"Animales"},
+  {kana:"くま",romaji:"kuma",es:"oso",cat:"Animales"},
+  {kana:"ぞう",romaji:"zou",es:"elefante",cat:"Animales"},
+  {kana:"ぶた",romaji:"buta",es:"cerdo",cat:"Animales"},
+  {kana:"うし",romaji:"ushi",es:"vaca",cat:"Animales"},
+
+  // Comida
+  {kana:"みず",romaji:"mizu",es:"agua",cat:"Comida"},
+  {kana:"おちゃ",romaji:"ocha",es:"té",cat:"Comida"},
+  {kana:"ごはん",romaji:"gohan",es:"arroz / comida",cat:"Comida"},
+  {kana:"たまご",romaji:"tamago",es:"huevo",cat:"Comida"},
+  {kana:"にく",romaji:"niku",es:"carne",cat:"Comida"},
+  {kana:"やさい",romaji:"yasai",es:"verduras",cat:"Comida"},
+  {kana:"くだもの",romaji:"kudamono",es:"fruta",cat:"Comida"},
+  {kana:"りんご",romaji:"ringo",es:"manzana",cat:"Comida"},
+  {kana:"いちご",romaji:"ichigo",es:"fresa",cat:"Comida"},
+  {kana:"すし",romaji:"sushi",es:"sushi",cat:"Comida"},
+
+  // Objetos cotidianos
+  {kana:"ほん",romaji:"hon",es:"libro",cat:"Objetos"},
+  {kana:"えんぴつ",romaji:"enpitsu",es:"lápiz",cat:"Objetos"},
+  {kana:"かばん",romaji:"kaban",es:"bolso / mochila",cat:"Objetos"},
+  {kana:"くつ",romaji:"kutsu",es:"zapatos",cat:"Objetos"},
+  {kana:"かさ",romaji:"kasa",es:"paraguas",cat:"Objetos"},
+  {kana:"でんわ",romaji:"denwa",es:"teléfono",cat:"Objetos"},
+  {kana:"とけい",romaji:"tokei",es:"reloj",cat:"Objetos"},
+  {kana:"くるま",romaji:"kuruma",es:"coche",cat:"Objetos"},
+  {kana:"でんしゃ",romaji:"densha",es:"tren",cat:"Objetos"},
+  {kana:"じてんしゃ",romaji:"jitensha",es:"bicicleta",cat:"Objetos"},
+
+  // Personas y familia
+  {kana:"せんせい",romaji:"sensei",es:"profesor/a",cat:"Personas"},
+  {kana:"がくせい",romaji:"gakusei",es:"estudiante",cat:"Personas"},
+  {kana:"ともだち",romaji:"tomodachi",es:"amigo/a",cat:"Personas"},
+  {kana:"かぞく",romaji:"kazoku",es:"familia",cat:"Personas"},
+  {kana:"おかあさん",romaji:"okaasan",es:"madre",cat:"Familia"},
+  {kana:"おとうさん",romaji:"otousan",es:"padre",cat:"Familia"},
+  {kana:"あに",romaji:"ani",es:"hermano mayor",cat:"Familia"},
+  {kana:"あね",romaji:"ane",es:"hermana mayor",cat:"Familia"},
+  {kana:"いもうと",romaji:"imouto",es:"hermana menor",cat:"Familia"},
+  {kana:"おとうと",romaji:"otouto",es:"hermano menor",cat:"Familia"},
+
+  // Lugares y naturaleza
+  {kana:"いえ",romaji:"ie",es:"casa",cat:"Lugares"},
+  {kana:"へや",romaji:"heya",es:"habitación",cat:"Lugares"},
+  {kana:"がっこう",romaji:"gakkou",es:"escuela",cat:"Lugares"},
+  {kana:"みち",romaji:"michi",es:"camino / calle",cat:"Lugares"},
+  {kana:"やま",romaji:"yama",es:"montaña",cat:"Naturaleza"},
+  {kana:"かわ",romaji:"kawa",es:"río",cat:"Naturaleza"},
+  {kana:"うみ",romaji:"umi",es:"mar",cat:"Naturaleza"},
+  {kana:"はな",romaji:"hana",es:"flor",cat:"Naturaleza"},
+  {kana:"き",romaji:"ki",es:"árbol",cat:"Naturaleza"},
+  {kana:"そら",romaji:"sora",es:"cielo",cat:"Naturaleza"}
+];
+const expressions = [
+  {kana:"おはよう",romaji:"ohayou",es:"buenos días (informal)",cat:"Saludos"},
+  {kana:"おはようございます",romaji:"ohayou gozaimasu",es:"buenos días (formal)",cat:"Saludos"},
+  {kana:"こんにちは",romaji:"konnichiwa",es:"hola / buenos días",cat:"Saludos"},
+  {kana:"こんばんは",romaji:"konbanwa",es:"buenas tardes / noches",cat:"Saludos"},
+  {kana:"おやすみ",romaji:"oyasumi",es:"buenas noches (informal)",cat:"Saludos"},
+  {kana:"おやすみなさい",romaji:"oyasuminasai",es:"buenas noches (formal)",cat:"Saludos"},
+  {kana:"ありがとう",romaji:"arigatou",es:"gracias",cat:"Cortesía"},
+  {kana:"ありがとうございます",romaji:"arigatou gozaimasu",es:"muchas gracias (formal)",cat:"Cortesía"},
+  {kana:"すみません",romaji:"sumimasen",es:"perdón / disculpe",cat:"Cortesía"},
+  {kana:"ごめんなさい",romaji:"gomennasai",es:"lo siento",cat:"Cortesía"},
+  {kana:"はい",romaji:"hai",es:"sí",cat:"Básicas"},
+  {kana:"いいえ",romaji:"iie",es:"no",cat:"Básicas"},
+  {kana:"おねがいします",romaji:"onegaishimasu",es:"por favor",cat:"Cortesía"},
+  {kana:"いただきます",romaji:"itadakimasu",es:"expresión antes de comer",cat:"Cotidianas"},
+  {kana:"ごちそうさまでした",romaji:"gochisousama deshita",es:"expresión al terminar de comer",cat:"Cotidianas"},
+  {kana:"はじめまして",romaji:"hajimemashite",es:"encantado/a de conocerte",cat:"Presentaciones"},
+  {kana:"よろしくおねがいします",romaji:"yoroshiku onegaishimasu",es:"encantado/a; cuento contigo",cat:"Presentaciones"},
+  {kana:"さようなら",romaji:"sayounara",es:"adiós",cat:"Despedidas"}
+];
+
 const sections = [
   {title:"Hiragana básico", key:"basic", data:basic},
   {title:"Dakuten ゛ y handakuten ゜", key:"dakuten", data:dakuten},
-  {title:"Combinaciones con ゃ・ゅ・ょ", key:"combo", data:combos}
+  {title:"Combinaciones con ゃ・ゅ・ょ", key:"combo", data:combos},
+  {
+    title:"ことば · Palabras y expresiones",
+    key:"words",
+    data:[...vocabulary,...expressions]
+  }
 ];
 const sheet = document.getElementById("sheet");
 let allCanvases = [];
@@ -187,9 +276,86 @@ function render(){
     const block=document.createElement("section");
     const heading=document.createElement("div");heading.className="section-title";
     const h=document.createElement("h2");h.textContent=section.title;
-    const count=document.createElement("span");count.textContent=section.data.length+" sílabas";
+    const count=document.createElement("span");
+    count.textContent=section.key==="words"
+  ? section.data.length+" ejercicios"
+  : section.data.length+" sílabas";
     heading.append(h,count);block.appendChild(heading);
     const grid=document.createElement("div");grid.className="grid";
+
+    if(section.key==="words"){
+      const items=shuffle(section.data);
+
+      items.forEach(entry=>{
+        const askKana=Math.random()<0.5;
+        const question=askKana?entry.kana:entry.romaji;
+
+        const pair=document.createElement("article");
+        pair.className="pair";
+
+        const label=document.createElement("p");
+        label.className="pair-label";
+        label.textContent=entry.cat+" · "+
+          (askKana?"¿Qué significa?":"Escribe en hiragana");
+        pair.appendChild(label);
+
+        const halves=document.createElement("div");
+        halves.className="halves";
+
+        halves.appendChild(
+          makeCell(question,askKana?"kana":"romaji",true,entry.kana)
+        );
+
+        halves.appendChild(
+          makeCell("",askKana?"romaji":"kana",false,entry.kana)
+        );
+
+        pair.appendChild(halves);
+
+        const tools=document.createElement("div");
+        tools.className="cell-tools";
+
+        const clear=document.createElement("button");
+        clear.className="mini";
+        clear.textContent="Borrar";
+        clear.onclick=()=>{
+          pair.querySelectorAll("canvas").forEach(c=>{
+            if(c._clear)c._clear();
+          });
+        };
+
+        const reveal=document.createElement("button");
+        reveal.className="mini";
+        reveal.textContent="Ver respuesta";
+
+        reveal.onclick=()=>{
+          const previous=pair.querySelector(".answer");
+
+          if(previous){
+            previous.remove();
+            return;
+          }
+
+          const answer=document.createElement("div");
+          answer.className="answer revealed";
+          answer.style.cssText=
+            "margin-top:5px;padding:8px;border-radius:7px;text-align:center;font-size:.85rem";
+
+          answer.textContent=
+            entry.kana+" · "+entry.romaji+" · "+entry.es;
+
+          pair.appendChild(answer);
+        };
+
+        tools.append(clear,reveal);
+        pair.appendChild(tools);
+        grid.appendChild(pair);
+      });
+
+      block.appendChild(grid);
+      sheet.appendChild(block);
+      return;
+    }
 
     const items = shuffle(section.data);
     const hideByKana = new Map();
