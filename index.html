@@ -117,7 +117,7 @@ const combos = [
 ["りゃ","rya"],["りゅ","ryu"],["りょ","ryo"],
 ["ぎゃ","gya"],["ぎゅ","gyu"],["ぎょ","gyo"],
 ["じゃ","ja"],["じゅ","ju"],["じょ","jo"],
-["ぢゃ","dya"],["ぢゅ","dyu"],["ぢょ","dyo"],
+["ぢゃ","ja"],["ぢゅ","ju"],["ぢょ","jo"],
 ["びゃ","bya"],["びゅ","byu"],["びょ","byo"],
 ["ぴゃ","pya"],["ぴゅ","pyu"],["ぴょ","pyo"]
 ];
@@ -190,9 +190,42 @@ function render(){
     const count=document.createElement("span");count.textContent=section.data.length+" sílabas";
     heading.append(h,count);block.appendChild(heading);
     const grid=document.createElement("div");grid.className="grid";
-    shuffle(section.data).forEach((item,index)=>{
-      const [kana,romaji]=item;
-      const hideKana=Math.random()<.5;
+
+    const items = shuffle(section.data);
+    const hideByKana = new Map();
+
+    // Grupos de sílabas que comparten romaji
+    const duplicateGroups = [
+      ["じ", "ぢ"],
+      ["ず", "づ"],
+      ["じゃ", "ぢゃ"],
+      ["じゅ", "ぢゅ"],
+      ["じょ", "ぢょ"]
+    ];
+
+    // Primero asignamos una orientación aleatoria a cada sílaba
+    items.forEach(([kana]) => {
+      hideByKana.set(kana, Math.random() < 0.5);
+    });
+
+    // Si aparecen las dos sílabas de un grupo, damos orientaciones opuestas
+    duplicateGroups.forEach(group => {
+      const present = group.filter(kana =>
+        items.some(item => item[0] === kana)
+      );
+
+      if (present.length >= 2) {
+        const first = Math.random() < 0.5;
+        present.forEach((kana, index) => {
+          hideByKana.set(kana, index % 2 === 0 ? first : !first);
+        });
+      }
+    });
+
+    items.forEach((item, index) => {
+      const [kana, romaji] = item;
+      const hideKana = hideByKana.get(kana);
+
       const pair=document.createElement("article");pair.className="pair";
       const label=document.createElement("p");label.className="pair-label";label.textContent="Una pista · una respuesta";pair.appendChild(label);
       const halves=document.createElement("div");halves.className="halves";
