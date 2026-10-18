@@ -27,63 +27,72 @@ main{max-width:1100px;margin:0 auto;padding:0 14px 40px}
 .pair{background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:7px;min-width:0;box-shadow:0 1px 1px #00000006}
 
 
+
 /* Palabras, expresiones y frases */
 
-/* Palabras y expresiones: pista arriba, escritura debajo */
+/* Las tarjetas ocupan el ancho de las casillas de sílabas */
 .pair.word-pair,
 .pair.expression-pair {
   grid-column: span 2;
 }
 
-.pair.word-pair .halves,
-.pair.expression-pair .halves,
-.pair.phrase-pair .halves {
+/* La pista aparece arriba y la zona de escritura debajo */
+.pair.word-pair .exercise-prompt,
+.pair.expression-pair .exercise-prompt,
+.pair.phrase-pair .exercise-prompt {
   display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-/* La altura de las casillas coincide con la de sílabas */
-.pair.word-pair .cell,
-.pair.expression-pair .cell,
-.pair.phrase-pair .cell {
-  aspect-ratio: auto;
-  height: auto;
-  min-height: 0;
-}
-
-/* Palabras y expresiones: cada casilla ocupa una fila */
-.pair.word-pair .cell,
-.pair.expression-pair .cell {
+  align-items: center;
+  justify-content: center;
   width: 100%;
   height: auto;
+  min-height: 0;
+  aspect-ratio: 2.16 / 1;
+  box-sizing: border-box;
+  padding: 4px;
+  border: 1px solid #d8d0c5;
+  border-radius: 8px;
+  background: var(--given);
+  text-align: center;
+  overflow-wrap: anywhere;
+  line-height: 1.1;
+  font-size: clamp(1rem, 3.2vw, 1.6rem);
+  font-weight: 600;
 }
 
-/* Frases: ocupan todo el ancho disponible */
+/* Hiragana */
+.pair.word-pair .exercise-prompt.kana,
+.pair.expression-pair .exercise-prompt.kana,
+.pair.phrase-pair .exercise-prompt.kana {
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  font-size: clamp(1.35rem, 4.3vw, 2.15rem);
+}
+
+/* La zona de escritura conserva la altura de una casilla de sílabas */
+.pair.word-pair .writing-area,
+.pair.expression-pair .writing-area {
+  width: 100%;
+  aspect-ratio: 2.16 / 1;
+  height: auto;
+  margin-top: 5px;
+}
+
+/* Las frases aprovechan todo el ancho */
 .pair.phrase-pair {
   grid-column: 1 / -1;
 }
 
-.pair.phrase-pair .cell {
+.pair.phrase-pair .exercise-prompt,
+.pair.phrase-pair .writing-area {
+  aspect-ratio: 4.32 / 1;
+}
+
+/* El lienzo ocupa toda la zona de escritura */
+.pair.writing-area canvas {
+  display: block;
   width: 100%;
-}
-
-.pair.word-pair .prompt,
-.pair.expression-pair .prompt,
-.pair.phrase-pair .prompt {
-  padding: 2px;
-  overflow-wrap: anywhere;
-}
-
-.pair.phrase-pair .prompt {
-  line-height: 1.1;
-}
-
-.pair.word-pair .cell.blank canvas,
-.pair.expression-pair .cell.blank canvas,
-.pair.phrase-pair .cell.blank canvas {
   height: 100%;
 }
+
 
 
 .halves{display:grid;grid-template-columns:1fr 1fr;gap:5px}
