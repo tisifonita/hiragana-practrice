@@ -28,68 +28,66 @@ main{max-width:1100px;margin:0 auto;padding:0 14px 40px}
 
   
 /* Palabras, expresiones y frases */
-
-/* Palabras: 2 casillas de ancho */
-.pair.word-pair {
-  grid-column: span 2;
-}
-
-.pair.word-pair .halves {
+.grid.text-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.pair.word-pair .cell {
-  aspect-ratio: 1.08 / 1;
-  min-height: 0;
-}
-
-/* Expresiones: 2 casillas de ancho */
+/* Palabras y expresiones: 2 cuadrados de ancho */
+.pair.word-pair,
 .pair.expression-pair {
   grid-column: span 2;
 }
 
-.pair.expression-pair .halves {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.pair.expression-pair .cell {
-  aspect-ratio: 1.08 / 1;
-  min-height: 0;
-}
-
-/* Frases: 4 casillas de ancho */
+/* Frases: todo el ancho de la cuadrícula */
 .pair.phrase-pair {
   grid-column: 1 / -1;
 }
 
-.pair.phrase-pair .halves {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+/* Pista encima del espacio para escribir */
+.exercise-prompt {
+  margin: 5px 2px 7px;
+  min-width: 0;
+  text-align: center;
+  font-size: clamp(1rem, 3.2vw, 1.6rem);
+  font-weight: 600;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
-.pair.phrase-pair .cell {
-  aspect-ratio: 1.08 / 1;
+.exercise-prompt.kana {
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  font-size: clamp(1.35rem, 4.3vw, 2.15rem);
+}
+
+/* Zona de escritura: misma altura aproximada que una casilla */
+.pair.word-pair .writing-area,
+.pair.expression-pair .writing-area {
+  aspect-ratio: 2.16 / 1;
   min-height: 0;
 }
 
-.pair.phrase-pair .prompt {
-  line-height: 1.1;
-  overflow-wrap: anywhere;
+.pair.phrase-pair .writing-area {
+  aspect-ratio: 2.16 / 1;
+  min-height: 0;
 }
 
-/* Ajustar el texto dentro de las casillas */
-.pair.word-pair .prompt,
-.pair.expression-pair .prompt,
-.pair.phrase-pair .prompt {
-  padding: 2px;
-  overflow-wrap: anywhere;
+/* En iPad y pantallas más anchas caben 4 cuadrados */
+@media (min-width: 650px) {
+  .grid.text-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .pair.word-pair .writing-area,
+  .pair.expression-pair .writing-area {
+    aspect-ratio: 2.24 / 1;
+  }
+
+  .pair.phrase-pair .writing-area {
+    aspect-ratio: 4.48 / 1;
+  }
 }
 
-/* Mantener el lienzo de escritura dentro de su casilla */
-.pair.word-pair .cell.blank canvas,
-.pair.expression-pair .cell.blank canvas,
-.pair.phrase-pair .cell.blank canvas {
-  height: 100%;
-}
+
 
 
 .halves{display:grid;grid-template-columns:1fr 1fr;gap:5px}
@@ -672,7 +670,10 @@ count.textContent =
       ? section.data.length + " ejercicios"
       : section.data.length + " sílabas";
     heading.append(h,count);block.appendChild(heading);
-    const grid=document.createElement("div");grid.className="grid";
+    const grid = document.createElement("div");
+grid.className = (section.key === "words" || section.key === "phrases")
+  ? "grid text-grid"
+  : "grid";
 
    if(section.key==="words" || section.key==="phrases"){
       const items=shuffle(section.data);
@@ -696,18 +697,22 @@ label.textContent = isPhrase
   : entry.cat + " · " + (askKana ? "Escribe en romaji" : "Escribe en hiragana");
         pair.appendChild(label);
 
-        const halves=document.createElement("div");
-        halves.className="halves";
 
-        halves.appendChild(
-          makeCell(question,askKana?"kana":"romaji",true,entry.kana)
-        );
+const prompt = document.createElement("div");
+prompt.className = "exercise-prompt" + (askKana ? " kana" : "");
+prompt.textContent = question;
+pair.appendChild(prompt);
 
-        halves.appendChild(
-          makeCell("",askKana?"romaji":"kana",false,entry.kana)
-        );
+const writing = makeCell(
+  "",
+  askKana ? "romaji" : "kana",
+  false,
+  entry.kana
+);
 
-        pair.appendChild(halves);
+writing.classList.add("writing-area");
+pair.appendChild(writing);
+
 
         const tools=document.createElement("div");
         tools.className="cell-tools";
