@@ -25,72 +25,73 @@ main{max-width:1100px;margin:0 auto;padding:0 14px 40px}
 .section-title span{font-size:.82rem;color:var(--muted)}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .pair{background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:7px;min-width:0;box-shadow:0 1px 1px #00000006}
+
   
-/* Fichas de palabras y expresiones */
-/* Huecos más rectangulares para las expresiones */
-  /* Fichas de frases: una frase por tarjeta y espacio amplio */
+/* Palabras, expresiones y frases */
+
+/* Palabras: 2 casillas de ancho */
+.pair.word-pair {
+  grid-column: span 2;
+}
+
+.pair.word-pair .halves {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.pair.word-pair .cell {
+  aspect-ratio: 1.08 / 1;
+  min-height: 0;
+}
+
+/* Expresiones: 2 casillas de ancho */
+.pair.expression-pair {
+  grid-column: span 2;
+}
+
+.pair.expression-pair .halves {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.pair.expression-pair .cell {
+  aspect-ratio: 1.08 / 1;
+  min-height: 0;
+}
+
+/* Frases: 4 casillas de ancho */
 .pair.phrase-pair {
   grid-column: 1 / -1;
 }
 
 .pair.phrase-pair .halves {
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .pair.phrase-pair .cell {
-  aspect-ratio: auto;
-  min-height: 110px;
+  aspect-ratio: 1.08 / 1;
+  min-height: 0;
 }
 
-.pair.phrase-pair .cell.given {
-  padding: 18px 12px;
-}
-
-.pair.phrase-pair .cell.blank {
-  min-height: 220px;
-}
-
-  .pair.phrase-pair .cell.blank canvas {
-  height: 220px;
-}
 .pair.phrase-pair .prompt {
-  line-height: 1.45;
-  overflow-wrap: anywhere;
-}
-.pair.expression-pair {
-  grid-column: span 2;
-}
-
-.pair.expression-pair .cell.blank {
-  min-height: 180px;
-  aspect-ratio: auto;
-}
-.pair.word-pair .halves {
-  grid-template-columns: minmax(0, 1fr);
-}
-
-.pair.word-pair .cell {
-  aspect-ratio: auto;
-  min-height: 100px;
-}
-
-.pair.word-pair .cell.given {
-  padding: 14px 8px;
-}
-
-.pair.word-pair .prompt {
+  line-height: 1.1;
   overflow-wrap: anywhere;
 }
 
-.pair.word-pair .prompt.kana {
-  font-size: clamp(1.5rem, 5vw, 2.2rem);
+/* Ajustar el texto dentro de las casillas */
+.pair.word-pair .prompt,
+.pair.expression-pair .prompt,
+.pair.phrase-pair .prompt {
+  padding: 2px;
+  overflow-wrap: anywhere;
 }
 
-.pair.word-pair .cell.blank {
-  min-height: 150px;
+/* Mantener el lienzo de escritura dentro de su casilla */
+.pair.word-pair .cell.blank canvas,
+.pair.expression-pair .cell.blank canvas,
+.pair.phrase-pair .cell.blank canvas {
+  height: 100%;
 }
 
-.pair-label{font-size:.7rem;color:var(--muted);text-align:center;margin:0 0 5px}
+
 .halves{display:grid;grid-template-columns:1fr 1fr;gap:5px}
 .cell{position:relative;min-width:0;aspect-ratio:1.08 / 1;border:1px solid #d8d0c5;border-radius:8px;overflow:hidden;background:#fff}
 .cell.given{background:var(--given);display:flex;align-items:center;justify-content:center}
