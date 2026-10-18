@@ -26,68 +26,64 @@ main{max-width:1100px;margin:0 auto;padding:0 14px 40px}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .pair{background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:7px;min-width:0;box-shadow:0 1px 1px #00000006}
 
-  
-/* Palabras, expresiones y frases */
-.grid.text-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
 
-/* Palabras y expresiones: 2 cuadrados de ancho */
+/* Palabras, expresiones y frases */
+
+/* Palabras y expresiones: pista arriba, escritura debajo */
 .pair.word-pair,
 .pair.expression-pair {
   grid-column: span 2;
 }
 
-/* Frases: todo el ancho de la cuadrícula */
+.pair.word-pair .halves,
+.pair.expression-pair .halves,
+.pair.phrase-pair .halves {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* La altura de las casillas coincide con la de sílabas */
+.pair.word-pair .cell,
+.pair.expression-pair .cell,
+.pair.phrase-pair .cell {
+  aspect-ratio: auto;
+  height: auto;
+  min-height: 0;
+}
+
+/* Palabras y expresiones: cada casilla ocupa una fila */
+.pair.word-pair .cell,
+.pair.expression-pair .cell {
+  width: 100%;
+  height: auto;
+}
+
+/* Frases: ocupan todo el ancho disponible */
 .pair.phrase-pair {
   grid-column: 1 / -1;
 }
 
-/* Pista encima del espacio para escribir */
-.exercise-prompt {
-  margin: 5px 2px 7px;
-  min-width: 0;
-  text-align: center;
-  font-size: clamp(1rem, 3.2vw, 1.6rem);
-  font-weight: 600;
-  line-height: 1.2;
+.pair.phrase-pair .cell {
+  width: 100%;
+}
+
+.pair.word-pair .prompt,
+.pair.expression-pair .prompt,
+.pair.phrase-pair .prompt {
+  padding: 2px;
   overflow-wrap: anywhere;
 }
 
-.exercise-prompt.kana {
-  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
-  font-size: clamp(1.35rem, 4.3vw, 2.15rem);
+.pair.phrase-pair .prompt {
+  line-height: 1.1;
 }
 
-/* Zona de escritura: misma altura aproximada que una casilla */
-.pair.word-pair .writing-area,
-.pair.expression-pair .writing-area {
-  aspect-ratio: 2.16 / 1;
-  min-height: 0;
+.pair.word-pair .cell.blank canvas,
+.pair.expression-pair .cell.blank canvas,
+.pair.phrase-pair .cell.blank canvas {
+  height: 100%;
 }
-
-.pair.phrase-pair .writing-area {
-  aspect-ratio: 2.16 / 1;
-  min-height: 0;
-}
-
-/* En iPad y pantallas más anchas caben 4 cuadrados */
-@media (min-width: 650px) {
-  .grid.text-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .pair.word-pair .writing-area,
-  .pair.expression-pair .writing-area {
-    aspect-ratio: 2.24 / 1;
-  }
-
-  .pair.phrase-pair .writing-area {
-    aspect-ratio: 4.48 / 1;
-  }
-}
-
-
 
 
 .halves{display:grid;grid-template-columns:1fr 1fr;gap:5px}
