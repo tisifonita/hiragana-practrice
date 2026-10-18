@@ -27,20 +27,28 @@ main{max-width:1100px;margin:0 auto;padding:0 14px 40px}
 .pair{background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:7px;min-width:0;box-shadow:0 1px 1px #00000006}
 
 
+
 /* Palabras, expresiones y frases */
 
-/* Palabras y expresiones: dos casillas de ancho */
+/* Expresiones y palabras: dos columnas */
 .pair.word-pair,
 .pair.expression-pair {
   grid-column: span 2;
 }
 
-/* Oraciones: todo el ancho disponible */
+/* Oraciones: todo el ancho de la cuadrícula */
 .pair.phrase-pair {
   grid-column: 1 / -1;
 }
 
-/* Pista: misma altura que una casilla de sílabas */
+/* Etiqueta de cada ejercicio */
+.pair-label {
+  margin: 0 0 5px;
+  font-size: .78rem;
+  color: var(--muted);
+}
+
+/* Pista */
 .pair.word-pair .exercise-prompt,
 .pair.expression-pair .exercise-prompt,
 .pair.phrase-pair .exercise-prompt {
@@ -48,7 +56,7 @@ main{max-width:1100px;margin:0 auto;padding:0 14px 40px}
   align-items: center;
   justify-content: center;
   width: 100%;
-  aspect-ratio: 2.16 / 1;
+  aspect-ratio: 4.32 / 1;
   height: auto;
   min-height: 0;
   box-sizing: border-box;
@@ -71,53 +79,62 @@ main{max-width:1100px;margin:0 auto;padding:0 14px 40px}
   font-size: clamp(1.35rem, 4.3vw, 2.15rem);
 }
 
-/* Zona de escritura: dos casillas de ancho */
+/* Zona de escritura */
 .pair.word-pair .writing-area,
-.pair.expression-pair .writing-area {
+.pair.expression-pair .writing-area,
+.pair.phrase-pair .writing-area {
   width: 100%;
-  aspect-ratio: 2.16 / 1;
+  aspect-ratio: 4.32 / 1;
   height: auto;
   min-height: 0;
   margin-top: 5px;
 }
 
-/* Oraciones: cuatro casillas de ancho en pantallas grandes */
-.pair.phrase-pair .exercise-prompt,
-.pair.phrase-pair .writing-area {
-  aspect-ratio: 4.32 / 1;
-  height: auto;
-  min-height: 0;
-}
-
-/* Ajuste para pantallas de tres columnas */
+/* Pantallas con tres columnas */
 @media (min-width: 650px) {
   .pair.word-pair .exercise-prompt,
   .pair.expression-pair .exercise-prompt,
   .pair.word-pair .writing-area,
   .pair.expression-pair .writing-area {
-    aspect-ratio: 2.24 / 1;
+    aspect-ratio: 4.48 / 1;
   }
 
   .pair.phrase-pair .exercise-prompt,
   .pair.phrase-pair .writing-area {
-    aspect-ratio: 3.36 / 1;
+    aspect-ratio: 6.72 / 1;
   }
 }
 
-/* Ajuste para pantallas de cuatro columnas */
+/* Pantallas con cuatro columnas */
 @media (min-width: 950px) {
   .pair.phrase-pair .exercise-prompt,
   .pair.phrase-pair .writing-area {
-    aspect-ratio: 4.48 / 1;
+    aspect-ratio: 8.96 / 1;
+  }
+}
+
+/* Impresión */
+@media print {
+  .pair.word-pair .exercise-prompt,
+  .pair.expression-pair .exercise-prompt,
+  .pair.word-pair .writing-area,
+  .pair.expression-pair .writing-area {
+    aspect-ratio: 4.8 / 1;
+  }
+
+  .pair.phrase-pair .exercise-prompt,
+  .pair.phrase-pair .writing-area {
+    aspect-ratio: 9.6 / 1;
   }
 }
 
 /* El lienzo ocupa toda la zona de escritura */
-.pair.writing-area canvas {
+.pair .writing-area canvas {
   display: block;
   width: 100%;
   height: 100%;
 }
+
 
 
 .halves{display:grid;grid-template-columns:1fr 1fr;gap:5px}
