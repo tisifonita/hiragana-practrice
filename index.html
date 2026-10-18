@@ -27,6 +27,44 @@ main{max-width:1100px;margin:0 auto;padding:0 14px 40px}
 .pair{background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:7px;min-width:0;box-shadow:0 1px 1px #00000006}
   
 /* Fichas de palabras y expresiones */
+/* Huecos más rectangulares para las expresiones */
+  /* Fichas de frases: una frase por tarjeta y espacio amplio */
+.pair.phrase-pair {
+  grid-column: 1 / -1;
+}
+
+.pair.phrase-pair .halves {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.pair.phrase-pair .cell {
+  aspect-ratio: auto;
+  min-height: 110px;
+}
+
+.pair.phrase-pair .cell.given {
+  padding: 18px 12px;
+}
+
+.pair.phrase-pair .cell.blank {
+  min-height: 220px;
+}
+
+  .pair.phrase-pair .cell.blank canvas {
+  height: 220px;
+}
+.pair.phrase-pair .prompt {
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.pair.expression-pair {
+  grid-column: span 2;
+}
+
+.pair.expression-pair .cell.blank {
+  min-height: 180px;
+  aspect-ratio: auto;
+}
 .pair.word-pair .halves {
   grid-template-columns: minmax(0, 1fr);
 }
@@ -98,18 +136,26 @@ html, body, .card, .cell, .cell * {
   <div class="controls">
     <label for="scope">Contenido:</label>
     <select id="scope">
-      <option value="all">Todo el hiragana</option>
+      <option value="all">Todo el contenido</option>
       <option value="basic">Hiragana básico</option>
       <option value="dakuten">Dakuten y handakuten</option>
       <option value="combo">Combinaciones pequeñas ゃ・ゅ・ょ</option>
       <option value="words">Palabras y expresiones</option>
+      <option value="phrases">Frases</option>
     </select>
     <button class="primary" id="newSheet">Nueva ficha aleatoria</button>
     <button id="clearAll">Borrar todo lo escrito</button>
     <button id="revealAll">Mostrar respuestas</button>
     <button id="print">Imprimir / guardar PDF</button>
   </div>
-  <p class="note">Escribe directamente dentro de las casillas vacías con el lápiz. Como la escritura es a mano, la página no puede corregirla automáticamente; puedes revelar las respuestas para comparar. Cada ficha oculta al azar el hiragana o el romaji de cada sílaba.</p>
+<p class="note">
+  Escribe directamente dentro de las casillas vacías con el lápiz.
+  Como la escritura es a mano, la página no puede corregirla automáticamente;
+  puedes revelar las respuestas para comparar.
+  Cada ejercicio muestra al azar el hiragana o el romaji como pista.
+  Escribe la equivalencia en la casilla vacía y revela la respuesta
+  cuando quieras comprobarla.
+</p>
 </header>
 <main id="sheet"></main>
 <footer>
@@ -151,7 +197,7 @@ const combos = [
 ];
 
 const vocabulary = [
-  // Animales
+  // 1. Animales
   {kana:"ねこ",romaji:"neko",es:"gato",cat:"Animales"},
   {kana:"いぬ",romaji:"inu",es:"perro",cat:"Animales"},
   {kana:"とり",romaji:"tori",es:"pájaro",cat:"Animales"},
@@ -162,8 +208,23 @@ const vocabulary = [
   {kana:"ぞう",romaji:"zou",es:"elefante",cat:"Animales"},
   {kana:"ぶた",romaji:"buta",es:"cerdo",cat:"Animales"},
   {kana:"うし",romaji:"ushi",es:"vaca",cat:"Animales"},
+  {kana:"ねずみ",romaji:"nezumi",es:"ratón",cat:"Animales"},
+  {kana:"きつね",romaji:"kitsune",es:"zorro",cat:"Animales"},
+  {kana:"たぬき",romaji:"tanuki",es:"tanuki",cat:"Animales"},
+  {kana:"さる",romaji:"saru",es:"mono",cat:"Animales"},
+  {kana:"とら",romaji:"tora",es:"tigre",cat:"Animales"},
+  {kana:"おおかみ",romaji:"ookami",es:"lobo",cat:"Animales"},
+  {kana:"かめ",romaji:"kame",es:"tortuga",cat:"Animales"},
+  {kana:"かえる",romaji:"kaeru",es:"rana",cat:"Animales"},
+  {kana:"へび",romaji:"hebi",es:"serpiente",cat:"Animales"},
+  {kana:"むし",romaji:"mushi",es:"insecto",cat:"Animales"},
+  {kana:"ひつじ",romaji:"hitsuji",es:"oveja",cat:"Animales"},
+  {kana:"やぎ",romaji:"yagi",es:"cabra",cat:"Animales"},
+  {kana:"しか",romaji:"shika",es:"ciervo",cat:"Animales"},
+  {kana:"いのしし",romaji:"inoshishi",es:"jabalí",cat:"Animales"},
+  {kana:"ふくろう",romaji:"fukurou",es:"búho",cat:"Animales"},
 
-  // Comida
+  // 2. Comida y bebida
   {kana:"みず",romaji:"mizu",es:"agua",cat:"Comida"},
   {kana:"おちゃ",romaji:"ocha",es:"té",cat:"Comida"},
   {kana:"ごはん",romaji:"gohan",es:"arroz / comida",cat:"Comida"},
@@ -174,8 +235,23 @@ const vocabulary = [
   {kana:"りんご",romaji:"ringo",es:"manzana",cat:"Comida"},
   {kana:"いちご",romaji:"ichigo",es:"fresa",cat:"Comida"},
   {kana:"すし",romaji:"sushi",es:"sushi",cat:"Comida"},
+  {kana:"たまねぎ",romaji:"tamanegi",es:"cebolla",cat:"Comida"},
+  {kana:"じゃがいも",romaji:"jagaimo",es:"patata",cat:"Comida"},
+  {kana:"にんじん",romaji:"ninjin",es:"zanahoria",cat:"Comida"},
+  {kana:"もも",romaji:"momo",es:"melocotón",cat:"Comida"},
+  {kana:"ぶどう",romaji:"budou",es:"uvas",cat:"Comida"},
+  {kana:"なし",romaji:"nashi",es:"pera",cat:"Comida"},
+  {kana:"みかん",romaji:"mikan",es:"mandarina",cat:"Comida"},
+  {kana:"すいか",romaji:"suika",es:"sandía",cat:"Comida"},
+  {kana:"まめ",romaji:"mame",es:"judía / haba",cat:"Comida"},
+  {kana:"こめ",romaji:"kome",es:"arroz sin cocinar",cat:"Comida"},
+  {kana:"しお",romaji:"shio",es:"sal",cat:"Comida"},
+  {kana:"さとう",romaji:"satou",es:"azúcar",cat:"Comida"},
+  {kana:"こしょう",romaji:"koshou",es:"pimienta",cat:"Comida"},
+  {kana:"みそ",romaji:"miso",es:"miso",cat:"Comida"},
+  {kana:"しょうゆ",romaji:"shouyu",es:"salsa de soja",cat:"Comida"},
 
-  // Objetos cotidianos
+  // 3. Objetos cotidianos
   {kana:"ほん",romaji:"hon",es:"libro",cat:"Objetos"},
   {kana:"えんぴつ",romaji:"enpitsu",es:"lápiz",cat:"Objetos"},
   {kana:"かばん",romaji:"kaban",es:"bolso / mochila",cat:"Objetos"},
@@ -186,8 +262,23 @@ const vocabulary = [
   {kana:"くるま",romaji:"kuruma",es:"coche",cat:"Objetos"},
   {kana:"でんしゃ",romaji:"densha",es:"tren",cat:"Objetos"},
   {kana:"じてんしゃ",romaji:"jitensha",es:"bicicleta",cat:"Objetos"},
+  {kana:"かぎ",romaji:"kagi",es:"llave",cat:"Objetos"},
+  {kana:"さら",romaji:"sara",es:"plato",cat:"Objetos"},
+  {kana:"はし",romaji:"hashi",es:"palillos",cat:"Objetos"},
+  {kana:"ふとん",romaji:"futon",es:"futón",cat:"Objetos"},
+  {kana:"まくら",romaji:"makura",es:"almohada",cat:"Objetos"},
+  {kana:"もうふ",romaji:"moufu",es:"manta",cat:"Objetos"},
+  {kana:"てがみ",romaji:"tegami",es:"carta",cat:"Objetos"},
+  {kana:"ちず",romaji:"chizu",es:"mapa",cat:"Objetos"},
+  {kana:"かみ",romaji:"kami",es:"papel",cat:"Objetos"},
+  {kana:"ふで",romaji:"fude",es:"pincel",cat:"Objetos"},
+  {kana:"いと",romaji:"ito",es:"hilo",cat:"Objetos"},
+  {kana:"はこ",romaji:"hako",es:"caja",cat:"Objetos"},
+  {kana:"ふく",romaji:"fuku",es:"ropa",cat:"Objetos"},
+  {kana:"ぼうし",romaji:"boushi",es:"sombrero",cat:"Objetos"},
+  {kana:"さいふ",romaji:"saifu",es:"cartera",cat:"Objetos"},
 
-  // Personas y familia
+  // 4. Personas y familia
   {kana:"せんせい",romaji:"sensei",es:"profesor/a",cat:"Personas"},
   {kana:"がくせい",romaji:"gakusei",es:"estudiante",cat:"Personas"},
   {kana:"ともだち",romaji:"tomodachi",es:"amigo/a",cat:"Personas"},
@@ -198,8 +289,23 @@ const vocabulary = [
   {kana:"あね",romaji:"ane",es:"hermana mayor",cat:"Familia"},
   {kana:"いもうと",romaji:"imouto",es:"hermana menor",cat:"Familia"},
   {kana:"おとうと",romaji:"otouto",es:"hermano menor",cat:"Familia"},
+  {kana:"おばあさん",romaji:"obaasan",es:"abuela",cat:"Familia"},
+  {kana:"おじいさん",romaji:"ojiisan",es:"abuelo",cat:"Familia"},
+  {kana:"おば",romaji:"oba",es:"tía",cat:"Familia"},
+  {kana:"おじ",romaji:"oji",es:"tío",cat:"Familia"},
+  {kana:"こども",romaji:"kodomo",es:"niño/a",cat:"Personas"},
+  {kana:"おとな",romaji:"otona",es:"adulto/a",cat:"Personas"},
+  {kana:"あかちゃん",romaji:"akachan",es:"bebé",cat:"Personas"},
+  {kana:"おとこ",romaji:"otoko",es:"hombre",cat:"Personas"},
+  {kana:"おんな",romaji:"onna",es:"mujer",cat:"Personas"},
+  {kana:"ひと",romaji:"hito",es:"persona",cat:"Personas"},
+  {kana:"みんな",romaji:"minna",es:"todos / todo el mundo",cat:"Personas"},
+  {kana:"だれ",romaji:"dare",es:"quién",cat:"Personas"},
+  {kana:"わたし",romaji:"watashi",es:"yo",cat:"Personas"},
+  {kana:"あなた",romaji:"anata",es:"tú / usted",cat:"Personas"},
+  {kana:"きょうだい",romaji:"kyoudai",es:"hermanos",cat:"Familia"},
 
-  // Lugares y naturaleza
+  // 5. Lugares y naturaleza
   {kana:"いえ",romaji:"ie",es:"casa",cat:"Lugares"},
   {kana:"へや",romaji:"heya",es:"habitación",cat:"Lugares"},
   {kana:"がっこう",romaji:"gakkou",es:"escuela",cat:"Lugares"},
@@ -207,40 +313,294 @@ const vocabulary = [
   {kana:"やま",romaji:"yama",es:"montaña",cat:"Naturaleza"},
   {kana:"かわ",romaji:"kawa",es:"río",cat:"Naturaleza"},
   {kana:"うみ",romaji:"umi",es:"mar",cat:"Naturaleza"},
-  {kana:"はな",romaji:"hana",es:"flor",cat:"Naturaleza"},
+  {kana:"はな",romaji:"hana",es:"flor / nariz",cat:"Naturaleza"},
   {kana:"き",romaji:"ki",es:"árbol",cat:"Naturaleza"},
-  {kana:"そら",romaji:"sora",es:"cielo",cat:"Naturaleza"}
+  {kana:"そら",romaji:"sora",es:"cielo",cat:"Naturaleza"},
+  {kana:"あめ",romaji:"ame",es:"lluvia",cat:"Naturaleza"},
+  {kana:"ゆき",romaji:"yuki",es:"nieve",cat:"Naturaleza"},
+  {kana:"かぜ",romaji:"kaze",es:"viento",cat:"Naturaleza"},
+  {kana:"つき",romaji:"tsuki",es:"luna",cat:"Naturaleza"},
+  {kana:"ほし",romaji:"hoshi",es:"estrella",cat:"Naturaleza"},
+  {kana:"ひ",romaji:"hi",es:"sol / fuego",cat:"Naturaleza"},
+  {kana:"くも",romaji:"kumo",es:"nube / araña",cat:"Naturaleza"},
+  {kana:"いし",romaji:"ishi",es:"piedra",cat:"Naturaleza"},
+  {kana:"もり",romaji:"mori",es:"bosque",cat:"Naturaleza"},
+  {kana:"いけ",romaji:"ike",es:"estanque",cat:"Naturaleza"},
+  {kana:"にわ",romaji:"niwa",es:"jardín",cat:"Naturaleza"},
+  {kana:"たき",romaji:"taki",es:"cascada",cat:"Naturaleza"},
+  {kana:"しま",romaji:"shima",es:"isla",cat:"Naturaleza"},
+  {kana:"はやし",romaji:"hayashi",es:"arboleda",cat:"Naturaleza"},
+  {kana:"たに",romaji:"tani",es:"valle",cat:"Naturaleza"},
+
+  // 6. Partes del cuerpo
+  {kana:"あたま",romaji:"atama",es:"cabeza",cat:"Cuerpo"},
+  {kana:"め",romaji:"me",es:"ojo",cat:"Cuerpo"},
+  {kana:"みみ",romaji:"mimi",es:"oreja",cat:"Cuerpo"},
+  {kana:"くち",romaji:"kuchi",es:"boca",cat:"Cuerpo"},
+  {kana:"は",romaji:"ha",es:"diente",cat:"Cuerpo"},
+  {kana:"て",romaji:"te",es:"mano",cat:"Cuerpo"},
+  {kana:"あし",romaji:"ashi",es:"pie / pierna",cat:"Cuerpo"},
+  {kana:"ゆび",romaji:"yubi",es:"dedo",cat:"Cuerpo"},
+  {kana:"おなか",romaji:"onaka",es:"barriga",cat:"Cuerpo"},
+  {kana:"かお",romaji:"kao",es:"cara",cat:"Cuerpo"},
+  {kana:"かみのけ",romaji:"kaminoke",es:"pelo",cat:"Cuerpo"},
+  {kana:"くび",romaji:"kubi",es:"cuello",cat:"Cuerpo"},
+  {kana:"かた",romaji:"kata",es:"hombro",cat:"Cuerpo"},
+  {kana:"うで",romaji:"ude",es:"brazo",cat:"Cuerpo"},
+  {kana:"ひじ",romaji:"hiji",es:"codo",cat:"Cuerpo"},
+  {kana:"ひざ",romaji:"hiza",es:"rodilla",cat:"Cuerpo"},
+  {kana:"せなか",romaji:"senaka",es:"espalda",cat:"Cuerpo"},
+  {kana:"むね",romaji:"mune",es:"pecho",cat:"Cuerpo"},
+  {kana:"こし",romaji:"koshi",es:"cintura / zona lumbar",cat:"Cuerpo"},
+  {kana:"ほね",romaji:"hone",es:"hueso",cat:"Cuerpo"},
+  {kana:"ち",romaji:"chi",es:"sangre",cat:"Cuerpo"},
+  {kana:"こころ",romaji:"kokoro",es:"corazón / mente",cat:"Cuerpo"},
+  {kana:"こえ",romaji:"koe",es:"voz",cat:"Cuerpo"},
+  {kana:"のど",romaji:"nodo",es:"garganta",cat:"Cuerpo"},
+  {kana:"はだ",romaji:"hada",es:"piel",cat:"Cuerpo"},
+
+  // 7. Verbos
+  {kana:"たべる",romaji:"taberu",es:"comer",cat:"Verbos"},
+  {kana:"のむ",romaji:"nomu",es:"beber",cat:"Verbos"},
+  {kana:"みる",romaji:"miru",es:"ver / mirar",cat:"Verbos"},
+  {kana:"きく",romaji:"kiku",es:"escuchar / preguntar",cat:"Verbos"},
+  {kana:"はなす",romaji:"hanasu",es:"hablar",cat:"Verbos"},
+  {kana:"よむ",romaji:"yomu",es:"leer",cat:"Verbos"},
+  {kana:"かく",romaji:"kaku",es:"escribir",cat:"Verbos"},
+  {kana:"かう",romaji:"kau",es:"comprar",cat:"Verbos"},
+  {kana:"うる",romaji:"uru",es:"vender",cat:"Verbos"},
+  {kana:"あるく",romaji:"aruku",es:"caminar",cat:"Verbos"},
+  {kana:"はしる",romaji:"hashiru",es:"correr",cat:"Verbos"},
+  {kana:"およぐ",romaji:"oyogu",es:"nadar",cat:"Verbos"},
+  {kana:"とぶ",romaji:"tobu",es:"volar / saltar",cat:"Verbos"},
+  {kana:"ねる",romaji:"neru",es:"dormir",cat:"Verbos"},
+  {kana:"おきる",romaji:"okiru",es:"despertarse / levantarse",cat:"Verbos"},
+  {kana:"あそぶ",romaji:"asobu",es:"jugar",cat:"Verbos"},
+  {kana:"まつ",romaji:"matsu",es:"esperar",cat:"Verbos"},
+  {kana:"いく",romaji:"iku",es:"ir",cat:"Verbos"},
+  {kana:"くる",romaji:"kuru",es:"venir",cat:"Verbos"},
+  {kana:"かえる",romaji:"kaeru",es:"volver a casa",cat:"Verbos"},
+  {kana:"あう",romaji:"au",es:"encontrarse con alguien",cat:"Verbos"},
+  {kana:"つくる",romaji:"tsukuru",es:"hacer / fabricar",cat:"Verbos"},
+  {kana:"あける",romaji:"akeru",es:"abrir",cat:"Verbos"},
+  {kana:"しめる",romaji:"shimeru",es:"cerrar",cat:"Verbos"},
+  {kana:"あらう",romaji:"arau",es:"lavar",cat:"Verbos"},
+
+  // 8. Adjetivos y sensaciones
+  {kana:"うれしい",romaji:"ureshii",es:"feliz / contento",cat:"Emociones"},
+  {kana:"かなしい",romaji:"kanashii",es:"triste",cat:"Emociones"},
+  {kana:"たのしい",romaji:"tanoshii",es:"divertido / agradable",cat:"Emociones"},
+  {kana:"こわい",romaji:"kowai",es:"aterrador / dar miedo",cat:"Emociones"},
+  {kana:"ねむい",romaji:"nemui",es:"tener sueño",cat:"Sensaciones"},
+  {kana:"おおきい",romaji:"ookii",es:"grande",cat:"Adjetivos"},
+  {kana:"ちいさい",romaji:"chiisai",es:"pequeño",cat:"Adjetivos"},
+  {kana:"あたらしい",romaji:"atarashii",es:"nuevo",cat:"Adjetivos"},
+  {kana:"ふるい",romaji:"furui",es:"viejo / antiguo",cat:"Adjetivos"},
+  {kana:"あつい",romaji:"atsui",es:"caliente / hace calor",cat:"Adjetivos"},
+  {kana:"さむい",romaji:"samui",es:"frío (clima)",cat:"Adjetivos"},
+  {kana:"あたたかい",romaji:"atatakai",es:"cálido",cat:"Adjetivos"},
+  {kana:"すずしい",romaji:"suzushii",es:"fresco",cat:"Adjetivos"},
+  {kana:"はやい",romaji:"hayai",es:"rápido / temprano",cat:"Adjetivos"},
+  {kana:"おそい",romaji:"osoi",es:"lento / tarde",cat:"Adjetivos"},
+  {kana:"おもい",romaji:"omoi",es:"pesado",cat:"Adjetivos"},
+  {kana:"かるい",romaji:"karui",es:"ligero",cat:"Adjetivos"},
+  {kana:"たかい",romaji:"takai",es:"alto / caro",cat:"Adjetivos"},
+  {kana:"やすい",romaji:"yasui",es:"barato",cat:"Adjetivos"},
+  {kana:"おいしい",romaji:"oishii",es:"delicioso",cat:"Adjetivos"},
+  {kana:"まずい",romaji:"mazui",es:"de mal sabor",cat:"Adjetivos"},
+  {kana:"あまい",romaji:"amai",es:"dulce",cat:"Adjetivos"},
+  {kana:"からい",romaji:"karai",es:"picante",cat:"Adjetivos"},
+  {kana:"つよい",romaji:"tsuyoi",es:"fuerte",cat:"Adjetivos"},
+  {kana:"よわい",romaji:"yowai",es:"débil",cat:"Adjetivos"},
+
+  // 9. Tiempo y días
+  {kana:"あさ",romaji:"asa",es:"mañana (parte del día)",cat:"Tiempo"},
+  {kana:"ひる",romaji:"hiru",es:"mediodía / día",cat:"Tiempo"},
+  {kana:"よる",romaji:"yoru",es:"noche",cat:"Tiempo"},
+  {kana:"きょう",romaji:"kyou",es:"hoy",cat:"Tiempo"},
+  {kana:"あした",romaji:"ashita",es:"mañana (día siguiente)",cat:"Tiempo"},
+  {kana:"きのう",romaji:"kinou",es:"ayer",cat:"Tiempo"},
+  {kana:"まいにち",romaji:"mainichi",es:"todos los días",cat:"Tiempo"},
+  {kana:"まいあさ",romaji:"maiasa",es:"cada mañana",cat:"Tiempo"},
+  {kana:"まいばん",romaji:"maiban",es:"cada noche",cat:"Tiempo"},
+  {kana:"いま",romaji:"ima",es:"ahora",cat:"Tiempo"},
+  {kana:"あと",romaji:"ato",es:"después / restante",cat:"Tiempo"},
+  {kana:"まえ",romaji:"mae",es:"antes / delante",cat:"Tiempo"},
+  {kana:"つぎ",romaji:"tsugi",es:"siguiente",cat:"Tiempo"},
+  {kana:"はじめ",romaji:"hajime",es:"principio",cat:"Tiempo"},
+  {kana:"おわり",romaji:"owari",es:"final",cat:"Tiempo"},
+  {kana:"はる",romaji:"haru",es:"primavera",cat:"Tiempo"},
+  {kana:"なつ",romaji:"natsu",es:"verano",cat:"Tiempo"},
+  {kana:"あき",romaji:"aki",es:"otoño",cat:"Tiempo"},
+  {kana:"ふゆ",romaji:"fuyu",es:"invierno",cat:"Tiempo"},
+  {kana:"げつようび",romaji:"getsuyoubi",es:"lunes",cat:"Tiempo"},
+  {kana:"かようび",romaji:"kayoubi",es:"martes",cat:"Tiempo"},
+  {kana:"すいようび",romaji:"suiyoubi",es:"miércoles",cat:"Tiempo"},
+  {kana:"もくようび",romaji:"mokuyoubi",es:"jueves",cat:"Tiempo"},
+  {kana:"きんようび",romaji:"kinyoubi",es:"viernes",cat:"Tiempo"},
+  {kana:"どようび",romaji:"doyoubi",es:"sábado",cat:"Tiempo"},
+
+  // 10. Colores, lugares y vida diaria
+  {kana:"あか",romaji:"aka",es:"rojo",cat:"Colores"},
+  {kana:"あお",romaji:"ao",es:"azul",cat:"Colores"},
+  {kana:"しろ",romaji:"shiro",es:"blanco",cat:"Colores"},
+  {kana:"くろ",romaji:"kuro",es:"negro",cat:"Colores"},
+  {kana:"きいろ",romaji:"kiiro",es:"amarillo",cat:"Colores"},
+  {kana:"あかるい",romaji:"akarui",es:"luminoso / alegre",cat:"Adjetivos"},
+  {kana:"くらい",romaji:"kurai",es:"oscuro",cat:"Adjetivos"},
+  {kana:"いろ",romaji:"iro",es:"color",cat:"Vida diaria"},
+  {kana:"おと",romaji:"oto",es:"sonido",cat:"Vida diaria"},
+  {kana:"まち",romaji:"machi",es:"ciudad / pueblo",cat:"Lugares"},
+  {kana:"あさごはん",romaji:"asagohan",es:"desayuno",cat:"Comida"},
+  {kana:"ひるごはん",romaji:"hirugohan",es:"comida del mediodía",cat:"Comida"},
+  {kana:"ばんごはん",romaji:"bangohan",es:"cena",cat:"Comida"},
+  {kana:"おかね",romaji:"okane",es:"dinero",cat:"Vida diaria"},
+  {kana:"てんき",romaji:"tenki",es:"tiempo atmosférico",cat:"Vida diaria"},
+  {kana:"でぐち",romaji:"deguchi",es:"salida",cat:"Lugares"},
+  {kana:"いりぐち",romaji:"iriguchi",es:"entrada",cat:"Lugares"},
+  {kana:"かいだん",romaji:"kaidan",es:"escaleras",cat:"Lugares"},
+  {kana:"みぎ",romaji:"migi",es:"derecha",cat:"Direcciones"},
+  {kana:"ひだり",romaji:"hidari",es:"izquierda",cat:"Direcciones"},
+  {kana:"うえ",romaji:"ue",es:"arriba / encima",cat:"Direcciones"},
+  {kana:"した",romaji:"shita",es:"abajo / debajo",cat:"Direcciones"},
+  {kana:"なか",romaji:"naka",es:"dentro / interior",cat:"Direcciones"},
+  {kana:"そと",romaji:"soto",es:"fuera / exterior",cat:"Direcciones"},
+  {kana:"ちかく",romaji:"chikaku",es:"cerca",cat:"Direcciones"}
 ];
 const expressions = [
+  // 1. Saludos y despedidas
   {kana:"おはよう",romaji:"ohayou",es:"buenos días (informal)",cat:"Saludos"},
   {kana:"おはようございます",romaji:"ohayou gozaimasu",es:"buenos días (formal)",cat:"Saludos"},
   {kana:"こんにちは",romaji:"konnichiwa",es:"hola / buenos días",cat:"Saludos"},
   {kana:"こんばんは",romaji:"konbanwa",es:"buenas tardes / noches",cat:"Saludos"},
   {kana:"おやすみ",romaji:"oyasumi",es:"buenas noches (informal)",cat:"Saludos"},
   {kana:"おやすみなさい",romaji:"oyasuminasai",es:"buenas noches (formal)",cat:"Saludos"},
-  {kana:"ありがとう",romaji:"arigatou",es:"gracias",cat:"Cortesía"},
+  {kana:"さようなら",romaji:"sayounara",es:"adiós",cat:"Despedidas"},
+  {kana:"またあした",romaji:"mata ashita",es:"hasta mañana",cat:"Despedidas"},
+  {kana:"いってきます",romaji:"ittekimasu",es:"me voy y volveré",cat:"Cotidianas"},
+  {kana:"いってらっしゃい",romaji:"itterasshai",es:"que te vaya bien (a quien sale)",cat:"Cotidianas"},
+  {kana:"ただいま",romaji:"tadaima",es:"ya estoy en casa",cat:"Cotidianas"},
+  {kana:"おかえりなさい",romaji:"okaerinasai",es:"bienvenido/a de vuelta",cat:"Cotidianas"},
+
+  // 2. Cortesía y agradecimientos
+  {kana:"ありがとう",romaji:"arigatou",es:"gracias (informal)",cat:"Cortesía"},
   {kana:"ありがとうございます",romaji:"arigatou gozaimasu",es:"muchas gracias (formal)",cat:"Cortesía"},
+  {kana:"どうもありがとうございます",romaji:"doumo arigatou gozaimasu",es:"muchísimas gracias",cat:"Cortesía"},
+  {kana:"どういたしまして",romaji:"dou itashimashite",es:"de nada",cat:"Cortesía"},
   {kana:"すみません",romaji:"sumimasen",es:"perdón / disculpe",cat:"Cortesía"},
   {kana:"ごめんなさい",romaji:"gomennasai",es:"lo siento",cat:"Cortesía"},
-  {kana:"はい",romaji:"hai",es:"sí",cat:"Básicas"},
-  {kana:"いいえ",romaji:"iie",es:"no",cat:"Básicas"},
-  {kana:"おねがいします",romaji:"onegaishimasu",es:"por favor",cat:"Cortesía"},
+  {kana:"もうしわけありません",romaji:"moushiwake arimasen",es:"le pido disculpas (formal)",cat:"Cortesía"},
+  {kana:"おねがいします",romaji:"onegaishimasu",es:"por favor / se lo pido",cat:"Cortesía"},
+  {kana:"よろしくおねがいします",romaji:"yoroshiku onegaishimasu",es:"encantado/a; espero llevarme bien contigo",cat:"Cortesía"},
+  {kana:"しつれいします",romaji:"shitsurei shimasu",es:"con permiso / disculpe",cat:"Cortesía"},
+
+  // 3. Comidas y situaciones cotidianas
   {kana:"いただきます",romaji:"itadakimasu",es:"expresión antes de comer",cat:"Cotidianas"},
   {kana:"ごちそうさまでした",romaji:"gochisousama deshita",es:"expresión al terminar de comer",cat:"Cotidianas"},
+  {kana:"おいしかったです",romaji:"oishikatta desu",es:"estaba delicioso",cat:"Cotidianas"},
+  {kana:"きをつけてください",romaji:"ki o tsukete kudasai",es:"tenga cuidado / cuídate",cat:"Cotidianas"},
+  {kana:"おだいじに",romaji:"odaiji ni",es:"que te mejores",cat:"Cotidianas"},
+  {kana:"おつかれさまです",romaji:"otsukaresama desu",es:"gracias por tu esfuerzo / buen trabajo",cat:"Cotidianas"},
+  {kana:"おめでとうございます",romaji:"omedetou gozaimasu",es:"muchas felicidades",cat:"Cotidianas"},
+
+  // 4. Presentaciones
   {kana:"はじめまして",romaji:"hajimemashite",es:"encantado/a de conocerte",cat:"Presentaciones"},
-  {kana:"よろしくおねがいします",romaji:"yoroshiku onegaishimasu",es:"encantado/a; cuento contigo",cat:"Presentaciones"},
-  {kana:"さようなら",romaji:"sayounara",es:"adiós",cat:"Despedidas"}
+  {kana:"おなまえはなんですか",romaji:"onamae wa nan desu ka",es:"¿cómo te llamas?",cat:"Presentaciones"},
+  {kana:"おなまえをおしえてください",romaji:"onamae o oshiete kudasai",es:"dime tu nombre, por favor",cat:"Presentaciones"},
+  {kana:"どうぞよろしくおねがいします",romaji:"douzo yoroshiku onegaishimasu",es:"encantado/a; espero llevarme bien contigo",cat:"Presentaciones"},
+
+  // 5. Preguntas y respuestas básicas
+  {kana:"はい",romaji:"hai",es:"sí",cat:"Básicas"},
+  {kana:"いいえ",romaji:"iie",es:"no",cat:"Básicas"},
+  {kana:"だいじょうぶです",romaji:"daijoubu desu",es:"está bien / no pasa nada",cat:"Básicas"},
+  {kana:"わかりました",romaji:"wakarimashita",es:"entendido",cat:"Básicas"},
+  {kana:"わかりません",romaji:"wakarimasen",es:"no lo entiendo",cat:"Básicas"},
+  {kana:"もういちどおねがいします",romaji:"mou ichido onegaishimasu",es:"otra vez, por favor",cat:"Básicas"},
+  {kana:"ゆっくりはなしてください",romaji:"yukkuri hanashite kudasai",es:"hable despacio, por favor",cat:"Básicas"},
+  {kana:"にほんごがわかりません",romaji:"nihongo ga wakarimasen",es:"no entiendo japonés",cat:"Básicas"},
+  {kana:"えいごをはなせますか",romaji:"eigo o hanasemasu ka",es:"¿habla inglés?",cat:"Básicas"},
+  {kana:"これはなんですか",romaji:"kore wa nan desu ka",es:"¿qué es esto?",cat:"Preguntas"},
+  {kana:"どこですか",romaji:"doko desu ka",es:"¿dónde está?",cat:"Preguntas"},
+  {kana:"いくらですか",romaji:"ikura desu ka",es:"¿cuánto cuesta?",cat:"Preguntas"},
+  {kana:"なんじですか",romaji:"nanji desu ka",es:"¿qué hora es?",cat:"Preguntas"},
+  {kana:"おげんきですか",romaji:"ogenki desu ka",es:"¿cómo estás?",cat:"Preguntas"},
+  {kana:"げんきです",romaji:"genki desu",es:"estoy bien",cat:"Básicas"},
+  {kana:"もちろんです",romaji:"mochiron desu",es:"por supuesto",cat:"Básicas"},
+  {kana:"ほんとうですか",romaji:"hontou desu ka",es:"¿de verdad?",cat:"Reacciones"},
+  {kana:"そうですか",romaji:"sou desu ka",es:"¿ah, sí? / ya veo",cat:"Reacciones"}
+];
+
+const phrases = [
+  {kana:"わたしは みずを のみます",romaji:"watashi wa mizu o nomimasu",es:"Yo bebo agua.",cat:"Frases"},
+  {kana:"りんごを たべます",romaji:"ringo o tabemasu",es:"Como una manzana.",cat:"Frases"},
+  {kana:"ほんを よみます",romaji:"hon o yomimasu",es:"Leo un libro.",cat:"Frases"},
+  {kana:"てがみを かきます",romaji:"tegami o kakimasu",es:"Escribo una carta.",cat:"Frases"},
+  {kana:"おちゃを のみます",romaji:"ocha o nomimasu",es:"Bebo té.",cat:"Frases"},
+  {kana:"ねこを みます",romaji:"neko o mimasu",es:"Veo un gato.",cat:"Frases"},
+  {kana:"おんがくを ききます",romaji:"ongaku o kikimasu",es:"Escucho música.",cat:"Frases"},
+  {kana:"にほんごを はなします",romaji:"nihongo o hanashimasu",es:"Hablo japonés.",cat:"Frases"},
+  {kana:"なまえを かきます",romaji:"namae o kakimasu",es:"Escribo un nombre.",cat:"Frases"},
+  {kana:"みずを かいます",romaji:"mizu o kaimasu",es:"Compro agua.",cat:"Frases"},
+
+  {kana:"まいにち あるきます",romaji:"mainichi arukimasu",es:"Camino todos los días.",cat:"Frases"},
+  {kana:"はやく おきます",romaji:"hayaku okimasu",es:"Me levanto temprano.",cat:"Frases"},
+  {kana:"よるに ねます",romaji:"yoru ni nemasu",es:"Duermo por la noche.",cat:"Frases"},
+  {kana:"がっこうへ いきます",romaji:"gakkou e ikimasu",es:"Voy a la escuela.",cat:"Frases"},
+  {kana:"いえに かえります",romaji:"ie ni kaerimasu",es:"Vuelvo a casa.",cat:"Frases"},
+  {kana:"ともだちに あいます",romaji:"tomodachi ni aimasu",es:"Me encuentro con un amigo.",cat:"Frases"},
+  {kana:"こうえんで あそびます",romaji:"kouen de asobimasu",es:"Juego en el parque.",cat:"Frases"},
+  {kana:"みちを はしります",romaji:"michi o hashirimasu",es:"Corro por el camino.",cat:"Frases"},
+  {kana:"うみで およぎます",romaji:"umi de oyogimasu",es:"Nado en el mar.",cat:"Frases"},
+  {kana:"ともだちを まちます",romaji:"tomodachi o machimasu",es:"Espero a un amigo.",cat:"Frases"},
+
+  {kana:"あさごはんを たべます",romaji:"asagohan o tabemasu",es:"Desayuno.",cat:"Frases"},
+  {kana:"ばんごはんを つくります",romaji:"bangohan o tsukurimasu",es:"Preparo la cena.",cat:"Frases"},
+  {kana:"やさいを あらいます",romaji:"yasai o araimasu",es:"Lavo las verduras.",cat:"Frases"},
+  {kana:"たまごを かいます",romaji:"tamago o kaimasu",es:"Compro huevos.",cat:"Frases"},
+  {kana:"ごはんを つくります",romaji:"gohan o tsukurimasu",es:"Preparo la comida.",cat:"Frases"},
+  {kana:"みずを のみません",romaji:"mizu o nomimasen",es:"No bebo agua.",cat:"Frases"},
+  {kana:"にくを たべます",romaji:"niku o tabemasu",es:"Como carne.",cat:"Frases"},
+  {kana:"りんごを ふたつ かいます",romaji:"ringo o futatsu kaimasu",es:"Compro dos manzanas.",cat:"Frases"},
+  {kana:"おちゃを つくります",romaji:"ocha o tsukurimasu",es:"Preparo té.",cat:"Frases"},
+  {kana:"さらを あらいます",romaji:"sara o araimasu",es:"Lavo los platos.",cat:"Frases"},
+
+  {kana:"まどを あけます",romaji:"mado o akemasu",es:"Abro la ventana.",cat:"Frases"},
+  {kana:"とびらを しめます",romaji:"tobira o shimemasu",es:"Cierro la puerta.",cat:"Frases"},
+  {kana:"ほんを かいます",romaji:"hon o kaimasu",es:"Compro un libro.",cat:"Frases"},
+  {kana:"てがみを よみます",romaji:"tegami o yomimasu",es:"Leo una carta.",cat:"Frases"},
+  {kana:"でんわを かけます",romaji:"denwa o kakemasu",es:"Hago una llamada.",cat:"Frases"},
+  {kana:"へやを そうじします",romaji:"heya o souji shimasu",es:"Limpio la habitación.",cat:"Frases"},
+  {kana:"ふくを あらいます",romaji:"fuku o araimasu",es:"Lavo la ropa.",cat:"Frases"},
+  {kana:"かぎを さがします",romaji:"kagi o sagashimasu",es:"Busco la llave.",cat:"Frases"},
+  {kana:"まどから そとを みます",romaji:"mado kara soto o mimasu",es:"Miro hacia fuera por la ventana.",cat:"Frases"},
+  {kana:"えを かきます",romaji:"e o kakimasu",es:"Dibujo una imagen.",cat:"Frases"},
+
+  {kana:"いぬが はしります",romaji:"inu ga hashirimasu",es:"El perro corre.",cat:"Frases"},
+  {kana:"ねこが ねます",romaji:"neko ga nemasu",es:"El gato duerme.",cat:"Frases"},
+  {kana:"とりが とびます",romaji:"tori ga tobimasu",es:"El pájaro vuela.",cat:"Frases"},
+  {kana:"こどもが あそびます",romaji:"kodomo ga asobimasu",es:"El niño juega.",cat:"Frases"},
+  {kana:"せんせいが はなします",romaji:"sensei ga hanashimasu",es:"El profesor habla.",cat:"Frases"},
+  {kana:"ともだちが きます",romaji:"tomodachi ga kimasu",es:"Viene un amigo.",cat:"Frases"},
+  {kana:"わたしは にほんごを べんきょうします",romaji:"watashi wa nihongo o benkyou shimasu",es:"Estudio japonés.",cat:"Frases"},
+  {kana:"まいばん ほんを よみます",romaji:"maiban hon o yomimasu",es:"Leo un libro todas las noches.",cat:"Frases"},
+  {kana:"あした ともだちに あいます",romaji:"ashita tomodachi ni aimasu",es:"Mañana me encuentro con un amigo.",cat:"Frases"},
+  {kana:"まいにち にほんごを かきます",romaji:"mainichi nihongo o kakimasu",es:"Escribo en japonés todos los días.",cat:"Frases"}
 ];
 
 const sections = [
   {title:"Hiragana básico", key:"basic", data:basic},
   {title:"Dakuten ゛ y handakuten ゜", key:"dakuten", data:dakuten},
   {title:"Combinaciones con ゃ・ゅ・ょ", key:"combo", data:combos},
-  {
-    title:"ことば · Palabras y expresiones",
-    key:"words",
-    data:[...vocabulary,...expressions]
-  }
+{
+  title:"ことば · Palabras y expresiones",
+  key:"words",
+  data:[...vocabulary,...expressions]
+},
+{
+  title:"ぶん · Frases",
+  key:"phrases",
+  data:phrases
+}
 ];
 const sheet = document.getElementById("sheet");
 let allCanvases = [];
@@ -304,13 +664,16 @@ function render(){
     const heading=document.createElement("div");heading.className="section-title";
     const h=document.createElement("h2");h.textContent=section.title;
     const count=document.createElement("span");
-    count.textContent=section.key==="words"
-  ? section.data.length+" ejercicios"
-  : section.data.length+" sílabas";
+count.textContent =
+  section.key === "phrases"
+    ? section.data.length + " frases"
+    : section.key === "words"
+      ? section.data.length + " ejercicios"
+      : section.data.length + " sílabas";
     heading.append(h,count);block.appendChild(heading);
     const grid=document.createElement("div");grid.className="grid";
 
-    if(section.key==="words"){
+   if(section.key==="words" || section.key==="phrases"){
       const items=shuffle(section.data);
 
       items.forEach(entry=>{
@@ -318,12 +681,18 @@ function render(){
         const question=askKana?entry.kana:entry.romaji;
 
         const pair=document.createElement("article");
-        pair.className="pair word-pair";
+       const isExpression = expressions.includes(entry);
+const isPhrase = section.key === "phrases";
+
+pair.className = isPhrase
+  ? "pair word-pair phrase-pair"
+  : "pair word-pair" + (isExpression ? " expression-pair" : "");
 
         const label=document.createElement("p");
         label.className="pair-label";
-        label.textContent=entry.cat+" · "+
-          (askKana?"¿Qué significa?":"Escribe en hiragana");
+label.textContent = isPhrase
+  ? (askKana ? "Escribe en romaji" : "Escribe en hiragana")
+  : entry.cat + " · " + (askKana ? "Escribe en romaji" : "Escribe en hiragana");
         pair.appendChild(label);
 
         const halves=document.createElement("div");
@@ -443,8 +812,12 @@ document.getElementById("scope").addEventListener("change",render);
 document.getElementById("clearAll").addEventListener("click",()=>{allCanvases.forEach(x=>x.canvas._clear&&x.canvas._clear());document.querySelectorAll(".answer").forEach(x=>x.remove())});
 document.getElementById("revealAll").addEventListener("click",()=>{
   document.querySelectorAll(".pair").forEach(pair=>{
-    const btn=[...pair.querySelectorAll("button")].find(b=>b.textContent==="Ver respuesta");
-    if(btn)btn.click();
+    if(pair.querySelector(".answer")) return;
+
+    const btn=[...pair.querySelectorAll("button")]
+      .find(b=>b.textContent==="Ver respuesta");
+
+    if(btn) btn.click();
   });
 });
 document.getElementById("print").addEventListener("click",()=>window.print());
