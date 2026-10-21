@@ -766,6 +766,7 @@ const cheatGrid=document.getElementById("cheatGrid");
 const cheatTabs=document.querySelectorAll(".cheat-tab");
 
 function showCheat(key){
+    if(key==="words" || key==="phrases") return;
   const section=sections.find(s=>s.key===key);
   if(!section)return;
 
