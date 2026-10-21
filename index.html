@@ -173,6 +173,101 @@ html, body, .card, .cell, .cell * {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Chuleta flotante de hiragana */
+#cheatToggle{
+  position:fixed;
+  right:16px;
+  bottom:18px;
+  z-index:1001;
+  width:54px;
+  height:54px;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:var(--accent);
+  color:white;
+  box-shadow:0 3px 12px #00000025;
+  font-size:1.35rem;
+  font-weight:700;
+}
+#cheatPanel{
+  position:fixed;
+  right:12px;
+  bottom:82px;
+  z-index:1000;
+  width:min(370px,calc(100vw - 24px));
+  max-height:68vh;
+  overflow:auto;
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:12px;
+  box-shadow:0 6px 28px #00000025;
+}
+#cheatPanel[hidden]{display:none}
+.cheat-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:10px;
+}
+.cheat-head strong{font-size:1rem}
+#cheatClose{
+  min-height:32px;
+  padding:3px 10px;
+  border-radius:9px;
+}
+.cheat-tabs{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:5px;
+  margin-bottom:10px;
+}
+.cheat-tab{
+  min-height:34px;
+  padding:5px 4px;
+  font-size:.78rem;
+  border-radius:8px;
+}
+.cheat-tab.active{
+  background:var(--accent);
+  color:white;
+  border-color:var(--accent);
+}
+#cheatGrid{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:5px;
+}
+.cheat-item{
+  min-width:0;
+  min-height:54px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:4px 1px;
+}
+.cheat-kana{
+  font-family:"Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;
+  font-size:1.3rem;
+  line-height:1.25;
+}
+.cheat-romaji{
+  font-size:.65rem;
+  line-height:1.1;
+  color:var(--muted);
+  overflow-wrap:anywhere;
+}
+@media print{
+  #cheatToggle,#cheatPanel{display:none!important}
+}
+
 </style>
 </head>
 <body>
@@ -207,6 +302,24 @@ html, body, .card, .cell, .cell * {
 <footer>
   Hecho para practicar, no hace falta iniciar sesión. Los trazos se mantienen en esta página mientras no la recargues; si quieres conservar una ficha, usa «Imprimir / guardar PDF» o haz una captura.
 </footer>
+  
+<button id="cheatToggle" type="button" aria-label="Abrir chuleta de hiragana" aria-expanded="false">あ</button>
+
+<aside id="cheatPanel" hidden>
+  <div class="cheat-head">
+    <strong>ひらがな · Chuleta</strong>
+    <button id="cheatClose" type="button">Cerrar ✕</button>
+  </div>
+  <div class="cheat-tabs">
+    <button class="cheat-tab active" data-cheat="basic">Básico</button>
+    <button class="cheat-tab" data-cheat="dakuten">Dakuten</button>
+    <button class="cheat-tab" data-cheat="combo">Combinaciones</button>
+    <button class="cheat-tab" data-cheat="words">Palabras y expresiones</button>
+    <button class="cheat-tab" data-cheat="phrases">Frases</button>
+  </div>
+  <div id="cheatGrid"></div>
+</aside>
+
 <script>
 const basic = [
 ["あ","a"],["い","i"],["う","u"],["え","e"],["お","o"],
@@ -648,6 +761,67 @@ const sections = [
   data:phrases
 }
 ];
+  
+const cheatToggle=document.getElementById("cheatToggle");
+const cheatPanel=document.getElementById("cheatPanel");
+const cheatGrid=document.getElementById("cheatGrid");
+const cheatTabs=document.querySelectorAll(".cheat-tab");
+
+function showCheat(key){
+  const section=sections.find(s=>s.key===key);
+  if(!section)return;
+
+  cheatGrid.innerHTML="";
+
+  // Para las secciones de palabras y frases,
+  // mostramos únicamente hiragana y romaji.
+  section.data.forEach(entry=>{
+    const kana=Array.isArray(entry)?entry[0]:entry.kana;
+    const romaji=Array.isArray(entry)?entry[1]:entry.romaji;
+
+    const item=document.createElement("div");
+    item.className="cheat-item";
+
+    const kanaEl=document.createElement("div");
+    kanaEl.className="cheat-kana";
+    kanaEl.textContent=kana;
+
+    const romajiEl=document.createElement("div");
+    romajiEl.className="cheat-romaji";
+    romajiEl.textContent=romaji;
+
+    item.append(kanaEl,romajiEl);
+    cheatGrid.appendChild(item);
+  });
+
+  cheatTabs.forEach(tab=>{
+    const active=tab.dataset.cheat===key;
+    tab.classList.toggle("active",active);
+    tab.setAttribute("aria-pressed",String(active));
+  });
+}
+
+function toggleCheat(open){
+  cheatPanel.hidden=!open;
+  cheatToggle.setAttribute("aria-expanded",String(open));
+}
+
+cheatToggle.addEventListener("click",()=>{
+  toggleCheat(cheatPanel.hidden);
+});
+
+document.getElementById("cheatClose").addEventListener("click",()=>{
+  toggleCheat(false);
+});
+
+cheatTabs.forEach(tab=>{
+  tab.addEventListener("click",()=>{
+    showCheat(tab.dataset.cheat);
+  });
+});
+
+showCheat("basic");
+
 const sheet = document.getElementById("sheet");
 let allCanvases = [];
 let allRevealed = false;
