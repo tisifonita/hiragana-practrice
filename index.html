@@ -41,11 +41,68 @@ main{max-width:1100px;margin:0 auto;padding:0 14px 40px}
   grid-column: 1 / -1;
 }
 
+.distance-badge {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 76px;
+  margin-left: 8px;
+  padding: 5px 7px;
+  border: 1px solid #d8d0c5;
+  border-radius: 9px;
+  background: var(--accent-soft);
+  color: #594783;
+  white-space: nowrap;
+}
+.distance-line {
+  font-size: .9rem;
+  font-weight: 750;
+  line-height: 1.15;
+}
+.distance-hint {
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+  font-size: .86rem;
+  font-weight: 650;
+  line-height: 1.15;
+}
+.distance-hint-es {
+  font-size: .72rem;
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--muted);
+  white-space: normal;
+  text-align: center;
+}
+.phrase-prompt-row {
+  display: flex;
+  align-items: stretch;
+  gap: 7px;
+}
+.phrase-prompt-row .exercise-prompt {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.phrase-prompt-row .distance-badge {
+  align-self: flex-start;
+}
+
 /* Etiqueta de cada ejercicio */
 .pair-label {
   margin: 0 0 5px;
   font-size: .78rem;
   color: var(--muted);
+}
+
+.prompt-translation {
+  margin: 3px 2px 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: .72rem;
+  line-height: 1.25;
 }
 
 /* Pista */
@@ -128,14 +185,6 @@ main{max-width:1100px;margin:0 auto;padding:0 14px 40px}
   }
 }
 
-/* El lienzo ocupa toda la zona de escritura */
-.pair .writing-area canvas {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-
 
 .halves{display:grid;grid-template-columns:1fr 1fr;gap:5px}
 .cell{position:relative;min-width:0;aspect-ratio:1.08 / 1;border:1px solid #d8d0c5;border-radius:8px;overflow:hidden;background:#fff}
@@ -166,7 +215,7 @@ footer{max-width:1100px;margin:auto;padding:0 18px 30px;color:var(--muted);font-
 @media print{body{background:white}.controls,.note,.cell-tools,footer{display:none!important}header{padding:8px 0}main{padding:0}.grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.pair{break-inside:avoid;box-shadow:none;padding:4px}.cell{aspect-ratio:1.2/1}.pair-label{margin-bottom:2px}}
 
 /* Evitar selecciones accidentales en el iPad */
-html, body, .card, .cell, .cell * {
+html, body, .cell, .cell * {
   -webkit-user-select: none !important;
   user-select: none !important;
   -webkit-touch-callout: none !important;
@@ -664,7 +713,6 @@ const expressions = [
   {kana:"はじめまして",romaji:"hajimemashite",es:"encantado/a de conocerte",cat:"Presentaciones"},
   {kana:"おなまえはなんですか",romaji:"onamae wa nan desu ka",es:"¿cómo te llamas?",cat:"Presentaciones"},
   {kana:"おなまえをおしえてください",romaji:"onamae o oshiete kudasai",es:"dime tu nombre, por favor",cat:"Presentaciones"},
-  {kana:"どうぞよろしくおねがいします",romaji:"douzo yoroshiku onegaishimasu",es:"encantado/a; espero llevarme bien contigo",cat:"Presentaciones"},
 
   // 5. Preguntas y respuestas básicas
   {kana:"はい",romaji:"hai",es:"sí",cat:"Básicas"},
@@ -688,60 +736,55 @@ const expressions = [
 ];
 
 const phrases = [
-  {kana:"わたしは みずを のみます",romaji:"watashi wa mizu o nomimasu",es:"Yo bebo agua.",cat:"Frases"},
-  {kana:"りんごを たべます",romaji:"ringo o tabemasu",es:"Como una manzana.",cat:"Frases"},
-  {kana:"ほんを よみます",romaji:"hon o yomimasu",es:"Leo un libro.",cat:"Frases"},
-  {kana:"てがみを かきます",romaji:"tegami o kakimasu",es:"Escribo una carta.",cat:"Frases"},
-  {kana:"おちゃを のみます",romaji:"ocha o nomimasu",es:"Bebo té.",cat:"Frases"},
-  {kana:"ねこを みます",romaji:"neko o mimasu",es:"Veo un gato.",cat:"Frases"},
-  {kana:"おんがくを ききます",romaji:"ongaku o kikimasu",es:"Escucho música.",cat:"Frases"},
-  {kana:"にほんごを はなします",romaji:"nihongo o hanashimasu",es:"Hablo japonés.",cat:"Frases"},
-  {kana:"なまえを かきます",romaji:"namae o kakimasu",es:"Escribo un nombre.",cat:"Frases"},
-  {kana:"みずを かいます",romaji:"mizu o kaimasu",es:"Compro agua.",cat:"Frases"},
+  {kana:"これは なんですか",romaji:"kore wa nan desu ka",es:"¿Qué es esto?",cat:"Frases"},
+  {kana:"これは はなです",romaji:"kore wa hana desu",es:"Esto es una flor.",cat:"Frases"},
+  {kana:"それは いぬです",romaji:"sore wa inu desu",es:"Eso es un perro.",cat:"Frases"},
+  {kana:"あれは ほんです",romaji:"are wa hon desu",es:"Aquello es un libro.",cat:"Frases"},
+  {kana:"ここは がっこうです",romaji:"koko wa gakkō desu",es:"Este lugar es la escuela.",cat:"Frases"},
+  {kana:"そこは こうえんです",romaji:"soko wa kōen desu",es:"Ese lugar es el parque.",cat:"Frases"},
+  {kana:"あそこは えきです",romaji:"asoko wa eki desu",es:"Aquel lugar es la estación.",cat:"Frases"},
+  {kana:"へやは どこですか",romaji:"heya wa doko desu ka",es:"¿Dónde está la habitación?",cat:"Frases"},
+  {kana:"ほんは どこですか",romaji:"hon wa doko desu ka",es:"¿Dónde está el libro?",cat:"Frases"},
+  {kana:"あれは だれですか",romaji:"are wa dare desu ka",es:"¿Quién es aquella persona?",cat:"Frases"},
+  {kana:"これは だれの ほんですか",romaji:"kore wa dare no hon desu ka",es:"¿De quién es este libro?",cat:"Frases"},
+  {kana:"これは わたしの ほんです",romaji:"kore wa watashi no hon desu",es:"Este es mi libro.",cat:"Frases"},
+  {kana:"それは せんせいの ほんです",romaji:"sore wa sensei no hon desu",es:"Ese es el libro del profesor.",cat:"Frases"},
+  {kana:"あれは ともだちの いえです",romaji:"are wa tomodachi no ie desu",es:"Aquella es la casa de un amigo.",cat:"Frases"},
+  {kana:"ここは わたしの へやです",romaji:"koko wa watashi no heya desu",es:"Esta es mi habitación.",cat:"Frases"},
+  {kana:"そこは せんせいの へやです",romaji:"soko wa sensei no heya desu",es:"Esa es la habitación del profesor.",cat:"Frases"},
+  {kana:"あそこは としょかんです",romaji:"asoko wa toshokan desu",es:"Allí está la biblioteca.",cat:"Frases"},
+  {kana:"これは なんの ほんですか",romaji:"kore wa nan no hon desu ka",es:"¿De qué tipo es este libro?",cat:"Frases"},
+  {kana:"それは にほんごの ほんです",romaji:"sore wa nihongo no hon desu",es:"Ese es un libro de japonés.",cat:"Frases"},
+  {kana:"あれは だれの かばんですか",romaji:"are wa dare no kaban desu ka",es:"¿De quién es aquel bolso?",cat:"Frases"},
+  {kana:"これは わたしの かばんです",romaji:"kore wa watashi no kaban desu",es:"Este es mi bolso.",cat:"Frases"},
+  {kana:"それは なんですか",romaji:"sore wa nan desu ka",es:"¿Qué es eso?",cat:"Frases"},
+  {kana:"あれは なんですか",romaji:"are wa nan desu ka",es:"¿Qué es aquello?",cat:"Frases"},
+  {kana:"えきは どこですか",romaji:"eki wa doko desu ka",es:"¿Dónde está la estación?",cat:"Frases"},
+  {kana:"だれの かばんですか",romaji:"dare no kaban desu ka",es:"¿De quién es el bolso?",cat:"Frases"},
 
-  {kana:"まいにち あるきます",romaji:"mainichi arukimasu",es:"Camino todos los días.",cat:"Frases"},
-  {kana:"はやく おきます",romaji:"hayaku okimasu",es:"Me levanto temprano.",cat:"Frases"},
-  {kana:"よるに ねます",romaji:"yoru ni nemasu",es:"Duermo por la noche.",cat:"Frases"},
-  {kana:"がっこうへ いきます",romaji:"gakkou e ikimasu",es:"Voy a la escuela.",cat:"Frases"},
-  {kana:"いえに かえります",romaji:"ie ni kaerimasu",es:"Vuelvo a casa.",cat:"Frases"},
-  {kana:"ともだちに あいます",romaji:"tomodachi ni aimasu",es:"Me encuentro con un amigo.",cat:"Frases"},
-  {kana:"こうえんで あそびます",romaji:"kouen de asobimasu",es:"Juego en el parque.",cat:"Frases"},
-  {kana:"みちを はしります",romaji:"michi o hashirimasu",es:"Corro por el camino.",cat:"Frases"},
-  {kana:"うみで およぎます",romaji:"umi de oyogimasu",es:"Nado en el mar.",cat:"Frases"},
-  {kana:"ともだちを まちます",romaji:"tomodachi o machimasu",es:"Espero a un amigo.",cat:"Frases"},
+  // Nuevos ejercicios: pregunta en hiragana y escribir la respuesta.
+  {task:"answer",kana:"これは なんの かばんですか",answerKana:"これは がっこうの かばんです",romaji:"kore wa nan no kaban desu ka",answerRomaji:"kore wa gakkō no kaban desu",es:"¿De qué tipo es esta mochila? · Es una mochila escolar.",distance:"C",emoji:"🎒🏫",hintKana:"かばん",hintEs:'bolso',cat:"Frases"},
+  {task:"answer",kana:"それは なんの ほんですか",answerKana:"それは えいごの ほんです",romaji:"sore wa nan no hon desu ka",answerRomaji:"sore wa eigo no hon desu",es:"¿De qué tipo es ese libro? · Es un libro de inglés.",distance:"L",emoji:"📘🇬🇧",hintKana:"ほん",hintEs:'libro',cat:"Frases"},
+  {task:"answer",kana:"ここは どこですか",answerKana:"ここは びょういんです",romaji:"koko wa doko desu ka",answerRomaji:"koko wa byōin desu",es:"¿Qué lugar es este? · Este lugar es un hospital.",distance:"C",emoji:"🏥",hintKana:"びょういん",hintEs:'hospital',cat:"Frases"},
+  {task:"answer",kana:"そこは どこですか",answerKana:"そこは みせです",romaji:"soko wa doko desu ka",answerRomaji:"soko wa mise desu",es:"¿Qué lugar es ese? · Ese lugar es una tienda.",distance:"L",emoji:"🏪",hintKana:"みせ",hintEs:'tienda',cat:"Frases"},
+  {task:"answer",kana:"あそこは どこですか",answerKana:"あそこは こうえんです",romaji:"asoko wa doko desu ka",answerRomaji:"asoko wa kōen desu",es:"¿Qué lugar es aquel? · Aquel lugar es un parque.",distance:"ML",emoji:"🌳",hintKana:"こうえん",hintEs:'parque',cat:"Frases"},
+  {task:"answer",kana:"これは だれの かさですか",answerKana:"これは せんせいの かさです",romaji:"kore wa dare no kasa desu ka",answerRomaji:"kore wa sensei no kasa desu",es:"¿De quién es este paraguas? · Es el paraguas del profesor.",distance:"C",emoji:"☂️👩‍🏫",hintKana:"かさ",hintEs:'paraguas',cat:"Frases"},
+  {task:"answer",kana:"それは だれの くつですか",answerKana:"それは ともだちの くつです",romaji:"sore wa dare no kutsu desu ka",answerRomaji:"sore wa tomodachi no kutsu desu",es:"¿De quién son esos zapatos? · Son de un amigo.",distance:"L",emoji:"👟🧑",hintKana:"くつ",hintEs:'zapatos',cat:"Frases"},
+  {task:"answer",kana:"あれは だれの ともだちですか",answerKana:"あれは せんせいの ともだちです",romaji:"are wa dare no tomodachi desu ka",answerRomaji:"are wa sensei no tomodachi desu",es:"¿De quién es amigo aquella persona? · Es amigo del profesor.",distance:"ML",emoji:"🧑‍🏫🧑",hintKana:"ともだち",hintEs:'amigo',cat:"Frases"},
+  {task:"answer",kana:"これは なんの かさですか",answerKana:"これは あめの ひの かさです",romaji:"kore wa nan no kasa desu ka",answerRomaji:"kore wa ame no hi no kasa desu",es:"¿Qué tipo de paraguas es este? · Es un paraguas para un día de lluvia.",distance:"C",emoji:"☂️🌧️",hintKana:"かさ",hintEs:'paraguas',cat:"Frases"},
+  {task:"answer",kana:"そこは なんですか",answerKana:"そこは がっこうです",romaji:"soko wa nan desu ka",answerRomaji:"soko wa gakkō desu",es:"¿Qué es ese lugar? · Ese lugar es una escuela.",distance:"L",emoji:"🏫",hintKana:"がっこう",hintEs:'escuela',cat:"Frases"},
 
-  {kana:"あさごはんを たべます",romaji:"asagohan o tabemasu",es:"Desayuno.",cat:"Frases"},
-  {kana:"ばんごはんを つくります",romaji:"bangohan o tsukurimasu",es:"Preparo la cena.",cat:"Frases"},
-  {kana:"やさいを あらいます",romaji:"yasai o araimasu",es:"Lavo las verduras.",cat:"Frases"},
-  {kana:"たまごを かいます",romaji:"tamago o kaimasu",es:"Compro huevos.",cat:"Frases"},
-  {kana:"ごはんを つくります",romaji:"gohan o tsukurimasu",es:"Preparo la comida.",cat:"Frases"},
-  {kana:"みずを のみません",romaji:"mizu o nomimasen",es:"No bebo agua.",cat:"Frases"},
-  {kana:"にくを たべます",romaji:"niku o tabemasu",es:"Como carne.",cat:"Frases"},
-  {kana:"りんごを ふたつ かいます",romaji:"ringo o futatsu kaimasu",es:"Compro dos manzanas.",cat:"Frases"},
-  {kana:"おちゃを つくります",romaji:"ocha o tsukurimasu",es:"Preparo té.",cat:"Frases"},
-  {kana:"さらを あらいます",romaji:"sara o araimasu",es:"Lavo los platos.",cat:"Frases"},
-
-  {kana:"まどを あけます",romaji:"mado o akemasu",es:"Abro la ventana.",cat:"Frases"},
-  {kana:"とびらを しめます",romaji:"tobira o shimemasu",es:"Cierro la puerta.",cat:"Frases"},
-  {kana:"ほんを かいます",romaji:"hon o kaimasu",es:"Compro un libro.",cat:"Frases"},
-  {kana:"てがみを よみます",romaji:"tegami o yomimasu",es:"Leo una carta.",cat:"Frases"},
-  {kana:"でんわを かけます",romaji:"denwa o kakemasu",es:"Hago una llamada.",cat:"Frases"},
-  {kana:"へやを そうじします",romaji:"heya o souji shimasu",es:"Limpio la habitación.",cat:"Frases"},
-  {kana:"ふくを あらいます",romaji:"fuku o araimasu",es:"Lavo la ropa.",cat:"Frases"},
-  {kana:"かぎを さがします",romaji:"kagi o sagashimasu",es:"Busco la llave.",cat:"Frases"},
-  {kana:"まどから そとを みます",romaji:"mado kara soto o mimasu",es:"Miro hacia fuera por la ventana.",cat:"Frases"},
-  {kana:"えを かきます",romaji:"e o kakimasu",es:"Dibujo una imagen.",cat:"Frases"},
-
-  {kana:"いぬが はしります",romaji:"inu ga hashirimasu",es:"El perro corre.",cat:"Frases"},
-  {kana:"ねこが ねます",romaji:"neko ga nemasu",es:"El gato duerme.",cat:"Frases"},
-  {kana:"とりが とびます",romaji:"tori ga tobimasu",es:"El pájaro vuela.",cat:"Frases"},
-  {kana:"こどもが あそびます",romaji:"kodomo ga asobimasu",es:"El niño juega.",cat:"Frases"},
-  {kana:"せんせいが はなします",romaji:"sensei ga hanashimasu",es:"El profesor habla.",cat:"Frases"},
-  {kana:"ともだちが きます",romaji:"tomodachi ga kimasu",es:"Viene un amigo.",cat:"Frases"},
-  {kana:"わたしは にほんごを べんきょうします",romaji:"watashi wa nihongo o benkyou shimasu",es:"Estudio japonés.",cat:"Frases"},
-  {kana:"まいばん ほんを よみます",romaji:"maiban hon o yomimasu",es:"Leo un libro todas las noches.",cat:"Frases"},
-  {kana:"あした ともだちに あいます",romaji:"ashita tomodachi ni aimasu",es:"Mañana me encuentro con un amigo.",cat:"Frases"},
-  {kana:"まいにち にほんごを かきます",romaji:"mainichi nihongo o kakimasu",es:"Escribo en japonés todos los días.",cat:"Frases"}
+  // Nuevos ejercicios: respuesta en hiragana y escribir la pregunta.
+  {task:"question",kana:"これは わたしの くつです",answerKana:"これは だれの くつですか",romaji:"kore wa watashi no kutsu desu",answerRomaji:"kore wa dare no kutsu desu ka",es:"Estos son mis zapatos. · ¿De quién son estos zapatos?",distance:"C",emoji:"👟",hintKana:"くつ",hintEs:'zapatos',cat:"Frases"},
+  {task:"question",kana:"それは せんせいの とけいです",answerKana:"それは だれの とけいですか",romaji:"sore wa sensei no tokei desu",answerRomaji:"sore wa dare no tokei desu ka",es:"Ese es el reloj del profesor. · ¿De quién es ese reloj?",distance:"L",emoji:"⌚👩‍🏫",hintKana:"とけい",hintEs:'reloj',cat:"Frases"},
+  {task:"question",kana:"あれは ともだちの じてんしゃです",answerKana:"あれは だれの じてんしゃですか",romaji:"are wa tomodachi no jitensha desu",answerRomaji:"are wa dare no jitensha desu ka",es:"Aquella es la bicicleta de un amigo. · ¿De quién es aquella bicicleta?",distance:"ML",emoji:"🚲🧑",hintKana:"じてんしゃ",hintEs:'bicicleta',cat:"Frases"},
+  {task:"question",kana:"ここは みせです",answerKana:"ここは どこですか",romaji:"koko wa mise desu",answerRomaji:"koko wa doko desu ka",es:"Aquí está la tienda. · ¿Qué lugar es este?",distance:"C",emoji:"🏪",hintKana:"みせ",hintEs:'tienda',cat:"Frases"},
+  {task:"question",kana:"そこは えきです",answerKana:"そこは どこですか",romaji:"soko wa eki desu",answerRomaji:"soko wa doko desu ka",es:"Ahí está la estación. · ¿Qué lugar es ese?",distance:"L",emoji:"🚉",hintKana:"えき",hintEs:'estación',cat:"Frases"},
+  {task:"question",kana:"あそこは ゆうびんきょくです",answerKana:"あそこは どこですか",romaji:"asoko wa yūbinkyoku desu",answerRomaji:"asoko wa doko desu ka",es:"Allí está la oficina de correos. · ¿Qué lugar es aquel?",distance:"ML",emoji:"📮",hintKana:"ゆうびんきょく",hintEs:'oficina de correos',cat:"Frases"},
+  {task:"question",kana:"これは せんせいの かばんです",answerKana:"これは だれの かばんですか",romaji:"kore wa sensei no kaban desu",answerRomaji:"kore wa dare no kaban desu ka",es:"Este es el bolso del profesor. · ¿De quién es este bolso?",distance:"C",emoji:"🎒👩‍🏫",hintKana:"かばん",hintEs:'bolso',cat:"Frases"},
+  {task:"question",kana:"それは えいごの ほんです",answerKana:"それは なんの ほんですか",romaji:"sore wa eigo no hon desu",answerRomaji:"sore wa nan no hon desu ka",es:"Ese es un libro de inglés. · ¿De qué tipo es ese libro?",distance:"L",emoji:"📘🇬🇧",hintKana:"ほん",hintEs:'libro',cat:"Frases"},
+  {task:"question",kana:"あれは ともだちの せんせいです",answerKana:"あれは だれの せんせいですか",romaji:"are wa tomodachi no sensei desu",answerRomaji:"are wa dare no sensei desu ka",es:"Aquel es el profesor de un amigo. · ¿De quién es ese profesor?",distance:"ML",emoji:"🧑‍🏫🧑",hintKana:"せんせい",hintEs:'profesor',cat:"Frases"},
+  {task:"question",kana:"これは がっこうの かばんです",answerKana:"これは なんの かばんですか",romaji:"kore wa gakkō no kaban desu",answerRomaji:"kore wa nan no kaban desu ka",es:"Esta es una mochila escolar. · ¿De qué tipo es esta mochila?",distance:"C",emoji:"🎒🏫",hintKana:"かばん",hintEs:'bolso',cat:"Frases"}
 ];
 
 const sections = [
@@ -772,8 +815,7 @@ function showCheat(key){
 
   cheatGrid.innerHTML="";
 
-  // Para las secciones de palabras y frases,
-  // mostramos únicamente hiragana y romaji.
+  // La chuleta solo muestra las tablas de sílabas.
   section.data.forEach(entry=>{
     const kana=Array.isArray(entry)?entry[0]:entry.kana;
     const romaji=Array.isArray(entry)?entry[1]:entry.romaji;
@@ -815,6 +857,7 @@ document.getElementById("cheatClose").addEventListener("click",()=>{
 
 cheatTabs.forEach(tab=>{
   tab.addEventListener("click",()=>{
+    cheatTabs.forEach(item=>item.classList.toggle("active",item===tab));
     showCheat(tab.dataset.cheat);
   });
 });
@@ -823,10 +866,9 @@ showCheat("basic");
 
 const sheet = document.getElementById("sheet");
 let allCanvases = [];
-let allRevealed = false;
 
 function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function makeCell(value, type, isGiven, pairId){
+function makeCell(value, type, isGiven){
   const cell=document.createElement("div");
   cell.className="cell "+(isGiven?"given":"blank");
   if(isGiven){
@@ -838,7 +880,7 @@ function makeCell(value, type, isGiven, pairId){
     const canvas=document.createElement("canvas");
     canvas.setAttribute("aria-label", type==="kana"?"Escribe el hiragana aquí":"Escribe el romaji aquí");
     cell.appendChild(canvas);
-    allCanvases.push({canvas, pairId});
+    allCanvases.push(canvas);
     setupCanvas(canvas);
   }
   return cell;
@@ -875,7 +917,8 @@ function setupCanvas(canvas){
   canvas._clear=()=>ctx.clearRect(0,0,canvas.width,canvas.height);
 }
 function render(){
-  sheet.innerHTML="";allCanvases=[];allRevealed=false;
+  sheet.innerHTML="";
+  allCanvases=[];
   const mode=document.getElementById("scope").value;
   const chosen=mode==="all"?sections:sections.filter(s=>s.key===mode);
   chosen.forEach(section=>{
@@ -891,47 +934,87 @@ count.textContent =
       : section.data.length + " sílabas";
     heading.append(h,count);block.appendChild(heading);
     const grid = document.createElement("div");
-grid.className = (section.key === "words" || section.key === "phrases")
-  ? "grid text-grid"
-  : "grid";
+    grid.className = "grid";
 
    if(section.key==="words" || section.key==="phrases"){
       const items=shuffle(section.data);
 
       items.forEach(entry=>{
-        const askKana=Math.random()<0.5;
-        const question=askKana?entry.kana:entry.romaji;
+        const isPhrase = section.key === "phrases";
+        const isNewTask = isPhrase && Boolean(entry.task);
+        const askKana = isNewTask ? true : Math.random() < 0.5;
+        const question = isNewTask
+          ? entry.kana
+          : (askKana ? entry.kana : entry.romaji);
 
         const pair=document.createElement("article");
-       const isExpression = expressions.includes(entry);
-const isPhrase = section.key === "phrases";
-
-pair.className = isPhrase
-  ? "pair word-pair phrase-pair"
-  : "pair word-pair" + (isExpression ? " expression-pair" : "");
+        const isExpression = expressions.includes(entry);
+        pair.className = isPhrase
+          ? "pair word-pair phrase-pair"
+          : "pair word-pair" + (isExpression ? " expression-pair" : "");
 
         const label=document.createElement("p");
         label.className="pair-label";
-label.textContent = isPhrase
-  ? (askKana ? "Escribe en romaji" : "Escribe en hiragana")
-  : entry.cat + " · " + (askKana ? "Escribe en romaji" : "Escribe en hiragana");
+        label.textContent = isNewTask
+          ? (entry.task === "answer" ? "Escribe la respuesta en hiragana" : "Escribe la pregunta en hiragana")
+          : (isPhrase ? (askKana ? "Escribe en romaji" : "Escribe en hiragana") : entry.cat + " · " + (askKana ? "Escribe en romaji" : "Escribe en hiragana"));
         pair.appendChild(label);
 
+        const prompt = document.createElement("div");
+        prompt.className = "exercise-prompt" + (askKana ? " kana" : "");
+        if (isNewTask) {
+          const promptRow = document.createElement("div");
+          promptRow.className = "phrase-prompt-row";
+          prompt.textContent = question;
+          promptRow.appendChild(prompt);
+          const badge = document.createElement("div");
+          badge.className = "distance-badge";
+          const distanceLine = document.createElement("span");
+          distanceLine.className = "distance-line";
+          distanceLine.textContent = entry.distance + " " + entry.emoji;
+          badge.appendChild(distanceLine);
+          if (entry.hintKana) {
+            const hint = document.createElement("span");
+            hint.className = "distance-hint";
+            hint.textContent = entry.hintKana;
+            badge.appendChild(hint);
+            if (entry.hintEs) {
+              const hintEs = document.createElement("span");
+              hintEs.className = "distance-hint-es";
+              hintEs.textContent = entry.hintEs;
+              badge.appendChild(hintEs);
+            }
+          }
+          badge.setAttribute("aria-label", ({C:"Cerca",L:"Lejos",ML:"Muy lejos"})[entry.distance] + ", pista visual: " + entry.emoji + (entry.hintKana ? ", en hiragana: " + entry.hintKana : "") + (entry.hintEs ? ", en español: " + entry.hintEs : ""));
+          promptRow.appendChild(badge);
+          pair.appendChild(promptRow);
+        } else {
+          prompt.textContent = question;
+          pair.appendChild(prompt);
+        }
 
-const prompt = document.createElement("div");
-prompt.className = "exercise-prompt" + (askKana ? " kana" : "");
-prompt.textContent = question;
-pair.appendChild(prompt);
+        // Solo los ejercicios nuevos de pregunta/respuesta llevan traducción
+        // debajo de la pista visible. Las demás frases no muestran traducción aquí.
+        if (isNewTask) {
+          const translations = String(entry.es || "").split(" · ");
+          const promptTranslation = entry.task === "answer"
+            ? translations[0]
+            : (translations[0] || "");
+          if (promptTranslation) {
+            const translation = document.createElement("p");
+            translation.className = "prompt-translation";
+            translation.textContent = promptTranslation;
+            pair.appendChild(translation);
+          }
+        }
 
-const writing = makeCell(
-  "",
-  askKana ? "romaji" : "kana",
-  false,
-  entry.kana
-);
-
-writing.classList.add("writing-area");
-pair.appendChild(writing);
+        const writing = makeCell(
+          "",
+          isNewTask ? "kana" : (askKana ? "romaji" : "kana"),
+          false
+        );
+        writing.classList.add("writing-area");
+        pair.appendChild(writing);
 
 
         const tools=document.createElement("div");
@@ -963,8 +1046,25 @@ pair.appendChild(writing);
           answer.style.cssText=
             "margin-top:5px;padding:8px;border-radius:7px;text-align:center;font-size:.85rem";
 
-          answer.textContent=
-            entry.kana+" · "+entry.romaji+" · "+entry.es;
+          // Todas las respuestas muestran siempre las tres formas:
+          // hiragana, romaji y traducción al español.
+          // En los ejercicios nuevos usamos la solución; en los habituales,
+          // usamos los datos de la propia ficha.
+          const translations = String(entry.es || "").split(" · ");
+          const answerKana = isNewTask ? entry.answerKana : entry.kana;
+          const answerRomaji = isNewTask ? entry.answerRomaji : entry.romaji;
+          const answerEs = isNewTask ? (translations[1] || "") : (entry.es || "");
+
+          const kanaLine = document.createElement("div");
+          kanaLine.textContent = answerKana || "";
+          kanaLine.style.cssText = "font-size:1rem;font-weight:600";
+          const romajiLine = document.createElement("div");
+          romajiLine.textContent = answerRomaji || "";
+          romajiLine.style.cssText = "margin-top:2px";
+          const translationLine = document.createElement("div");
+          translationLine.textContent = answerEs;
+          translationLine.style.cssText = "margin-top:2px;font-size:.78rem;opacity:.8";
+          answer.append(kanaLine, romajiLine, translationLine);
 
           pair.appendChild(answer);
         };
@@ -1010,16 +1110,15 @@ pair.appendChild(writing);
       }
     });
 
-    items.forEach((item, index) => {
+    items.forEach(item => {
       const [kana, romaji] = item;
       const hideKana = hideByKana.get(kana);
 
       const pair=document.createElement("article");pair.className="pair";
       const label=document.createElement("p");label.className="pair-label";label.textContent="Una pista · una respuesta";pair.appendChild(label);
       const halves=document.createElement("div");halves.className="halves";
-      const id=section.key+"-"+kana;
-      halves.appendChild(makeCell(kana,"kana",!hideKana,id));
-      halves.appendChild(makeCell(romaji,"romaji",hideKana,id));
+      halves.appendChild(makeCell(kana,"kana",!hideKana));
+      halves.appendChild(makeCell(romaji,"romaji",hideKana));
       pair.appendChild(halves);
       const tools=document.createElement("div");tools.className="cell-tools";
       const clear=document.createElement("button");clear.className="mini";clear.textContent="Borrar";clear.onclick=()=>{pair.querySelectorAll("canvas").forEach(c=>c._clear&&c._clear())};
@@ -1035,7 +1134,7 @@ pair.appendChild(writing);
 }
 document.getElementById("newSheet").addEventListener("click",render);
 document.getElementById("scope").addEventListener("change",render);
-document.getElementById("clearAll").addEventListener("click",()=>{allCanvases.forEach(x=>x.canvas._clear&&x.canvas._clear());document.querySelectorAll(".answer").forEach(x=>x.remove())});
+document.getElementById("clearAll").addEventListener("click",()=>{allCanvases.forEach(canvas=>canvas._clear&&canvas._clear());document.querySelectorAll(".answer").forEach(x=>x.remove())});
 document.getElementById("revealAll").addEventListener("click",()=>{
   document.querySelectorAll(".pair").forEach(pair=>{
     if(pair.querySelector(".answer")) return;
@@ -1047,7 +1146,6 @@ document.getElementById("revealAll").addEventListener("click",()=>{
   });
 });
 document.getElementById("print").addEventListener("click",()=>window.print());
-window.addEventListener("resize",()=>{ /* canvas remains usable; no forced rerender to preserve writing */ });
 render();
 </script>
 </body>
